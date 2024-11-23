@@ -1,12 +1,7 @@
-import React from "react";
+import { NavProps } from "./types";
 import NavButton from "./NavButton";
 
-interface NavElementProps {
-    text: string;
-    onClick?: () => void;
-}
-
-const NavElement = ({ text, onClick }: NavElementProps): JSX.Element => {
+const NavElement = ({ text, onClick }: NavProps): JSX.Element => {
     return (
         <li>
             <NavButton text={text} onClick={onClick} />

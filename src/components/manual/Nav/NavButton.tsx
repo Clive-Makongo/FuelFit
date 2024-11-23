@@ -1,11 +1,7 @@
-import React from "react";
+import { NavProps } from "./types";
 
-interface NavButtonProps {
-    text: string;
-    onClick?: () => void;
-}
-
-const NavButton = ({ text, onClick }: NavButtonProps): JSX.Element => {
+// 
+const NavButton = ({ text, onClick }: NavProps): JSX.Element => {
     return (
         <button
             className="bg-red-500 m-2 p-2"
@@ -17,3 +13,4 @@ const NavButton = ({ text, onClick }: NavButtonProps): JSX.Element => {
 };
 
 export default NavButton;
+
