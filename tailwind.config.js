@@ -2,6 +2,7 @@
 module.exports = {
     darkMode: ["class"],
 	content: ["./src/**/*.{html,js,jsx,tsx}",
+		'./public/index.html',
 		"./node_modules/@shadcn/ui/dist/**/*.{js,ts,jsx,tsx}"
 	],
   theme: {
