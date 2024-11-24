@@ -3,7 +3,7 @@ import NavButton from "./NavButton";
 
 const NavElement = ({ text, onClick }: NavProps): JSX.Element => {
     return (
-        <li>
+        <li className="">
             <NavButton text={text} onClick={onClick} />
         </li>
     );

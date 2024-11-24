@@ -1,5 +1,5 @@
 import Card from './components/manual/card'
-import Navbar from './components/manual/Nav/Navbar'
+import Navbar from './components/manual/NavDesk/Navbar'
 import './index.css'
 
 function App() {
