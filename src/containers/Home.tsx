@@ -1,5 +1,6 @@
 import Card from '../components/manual/card';
 import NavDesk from '../components/manual/NavDesk/Navbar';
+import NavMob from '../components/manual/NavMob/Navbar'
 import { useState } from 'react';
 import { useWindowSize } from '@/utils/useWindowSize';
 
@@ -17,6 +18,7 @@ function Home(): JSX.Element {
             {isMobile ? (
                 <div>
                     {/* Mobile View */}
+                    <NavMob/>
                     <div className="bg-red-500 p-4 w-full text-white">Mobile View</div>
                 </div>
             ) : (
