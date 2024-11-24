@@ -1,4 +1,4 @@
-import Card from '../components/manual/card';
+import Card from '../components/manual/Card/card';
 import NavDesk from '../components/manual/NavDesk/Navbar';
 import NavMob from '../components/manual/NavMob/Navbar'
 import { useState } from 'react';
@@ -19,7 +19,7 @@ function Home(): JSX.Element {
                 <div>
                     {/* Mobile View */}
                     <NavMob/>
-                    <div className="bg-red-500 p-4 w-full text-white">Mobile View</div>
+                    <div className="bg-blue-500 p-4 w-full text-white">Mobile View</div>
                 </div>
             ) : (
                 <div>
