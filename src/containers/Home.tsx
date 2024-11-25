@@ -25,7 +25,7 @@ function Home(): JSX.Element {
                     {/* Mobile View */}
                     {/* prop drilling navbar */}
                     <NavMob selectedPage={mobilePage} setSelectedPage={setMobilePage}/>
-                    <div className="bg-blue-500 p-4 w-full h-50 text-white">Mobile View</div>
+                    <div className="bg-blue-500 p-4 w-full text-white">Mobile View</div>
                     {mobilePage === "home" && (
                         <div className='bg-purple-500'>
                             <h1 className="text-2xl font-bold">Welcome Home!</h1>

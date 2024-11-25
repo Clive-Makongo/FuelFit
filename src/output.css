@@ -676,16 +676,20 @@ body {
   height: 2.25rem;
 }
 
-.h-\[var\(--radix-navigation-menu-viewport-height\)\] {
-  height: var(--radix-navigation-menu-viewport-height);
-}
-
-.h-80 {
-  height: 20rem;
+.h-\[200px\] {
+  height: 200px;
 }
 
 .h-\[50px\] {
   height: 50px;
+}
+
+.h-\[var\(--radix-navigation-menu-viewport-height\)\] {
+  height: var(--radix-navigation-menu-viewport-height);
+}
+
+.h-\[20px\] {
+  height: 20px;
 }
 
 .w-1\/4 {
