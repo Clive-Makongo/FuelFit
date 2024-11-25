@@ -1,24 +1,30 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 
-// object that defines page selection
+// object to define the page props for the state
 interface PageContextType {
-    page: string;
+    selectedPage: string;  
     setSelectedPage: (page: string) => void;
 };
 
-// Create the context
+// create context hook
 const PageContext = createContext<PageContextType | undefined>(undefined);
 
-// this is creating the context that takes the props gor the different pages
-export const PageProvider = ({ page }: PageContextType): JSX.Element => {
-    const [selectedPage,  setSelectedPage] = useState<string>("home")
+// 
+export const PageProvider = ({ children }: { children: ReactNode }) => {
+    const [selectedPage, setSelectedPage] = useState<string>("home");
+
     return (
-        <>
-            {/* this is where i'm going to use the states */}
-            <PageContext.Provider value={{selectedPage, setSelectedPage}}>
-                {selectedPage}
-            </PageContext.Provider>
-        </>
-    )
-    
+        <PageContext.Provider value={{ selectedPage, setSelectedPage }}>
+            {children}
+        </PageContext.Provider>
+    );
+}
+
+// error check
+export const usePage = () => {
+    const context = useContext(PageContext);
+    if (!context) {
+        throw new Error('usePage must be used within a PageProvider');
+    }
+    return context;
 }

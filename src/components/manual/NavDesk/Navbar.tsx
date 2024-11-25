@@ -1,35 +1,25 @@
 import NavElement from "./NavElement";
-import { useState, useEffect } from "react";
+import { usePage } from "../Context/pageContext";
 
 const Navbar = (): JSX.Element => {
-    interface Pages {
-        home: string;
-        mealIdeas: string;
-        workOut: string;
-        selfCare: string;
+    // page selections props using useContext
+    const { setSelectedPage } = usePage();
 
-    };
-
-    const [selected, setSelected] = useState<string>("home");
-
-    useEffect(() => {
-
-    }, [selected]);
-
+    // funtions for changing pages
     const handleHomeClick = () => {
-        setSelected("home");
+        setSelectedPage("home");
     };
 
     const handleMealClick = () => {
-        setSelected("meal");
+        setSelectedPage("meal");
     };
 
     const handleWorkoutClick = () => {
-        setSelected("workOut");
+        setSelectedPage("workOut");
     };
 
     const handleSelfCareClick = () => {
-        setSelected("selfCare");
+        setSelectedPage("selfCare");
     };
 
     return (
