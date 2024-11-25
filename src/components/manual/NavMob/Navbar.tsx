@@ -1,12 +1,36 @@
 import NavElement from "./NavElement";
 import { useState } from "react";
-import { motion } from "motion/react";  // Import framer-motion for animation
+import { motion } from "motion/react"; 
+// MAYBE WORK ON MAKING THE DROPDOWN ANIMATE INDIVIDUALLY?
 
-// MAYBE WORK ON MAKING THEM ANIMATE INDIVIDUALLY?
+interface NavbarProps {
+    selectedPage: string;
+    setSelectedPage: (page: string) => void;
+};
 
-const Navbar = (): JSX.Element => {
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);  // Track menu state
+const Navbar = ({selectedPage, setSelectedPage}: NavbarProps): JSX.Element => {
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);  // hamburger menu state
 
+    // funtions for changing pages
+    const handleHomeClick = () => {
+        setSelectedPage("home");
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleMealClick = () => {
+        setSelectedPage("meal");
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleWorkoutClick = () => {
+        setSelectedPage("workOut");
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleSelfCareClick = () => {
+        setSelectedPage("selfCare");
+        setIsMenuOpen(!isMenuOpen);
+    };
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);  // Toggle menu state
 
     return (
@@ -32,10 +56,10 @@ const Navbar = (): JSX.Element => {
                 exit={{ opacity: 0, y: -20 }}  // On exit (close)
                 transition={{ duration: 0.3 }}
             >
-                <NavElement text="Home" onClick={() => alert("Button 1 clicked")} />
-                <NavElement text="Meal Ideas" onClick={() => alert("Button 2 clicked")} />
-                <NavElement text="Workout Plans" onClick={() => alert("Button 3 clicked")} />
-                <NavElement text="Self Care" onClick={() => alert("Button 3 clicked")} />
+                <NavElement text="Home" onClick={handleHomeClick} />
+                <NavElement text="Meal Ideas" onClick={handleMealClick} />
+                <NavElement text="Workout Plans" onClick={handleWorkoutClick} />
+                <NavElement text="Self Care" onClick={handleSelfCareClick} />
             </motion.ul>
         </nav>
     );
