@@ -1,34 +1,30 @@
 import NavElement from "./NavElement";
 import { usePage } from "../Context/pageContext";
 
+const NavbarIds: string[] = ['home', 'meal', 'workOut', 'selfCare'];
+
 const Navbar = (): JSX.Element => {
     // page selections props using useContext
     const { setSelectedPage } = usePage();
 
-    // funtions for changing pages
-    const handleHomeClick = () => {
-        setSelectedPage("home");
-    };
-
-    const handleMealClick = () => {
-        setSelectedPage("meal");
-    };
-
-    const handleWorkoutClick = () => {
-        setSelectedPage("workOut");
-    };
-
-    const handleSelfCareClick = () => {
-        setSelectedPage("selfCare");
+    // function to select which page i'm clicking from the array
+    // sends the selected page prop back up the tree
+    const handleClick = (page: number): void => {
+        if(page >= 0 && page <= NavbarIds.length) {
+            setSelectedPage(NavbarIds[page]);
+        };        
     };
 
     return (
         <nav>
-            <ul className="flex bg-red-500 flex-row justify-evenly px-5">
-                <NavElement text="Home" onClick={handleHomeClick} />
-                <NavElement text="Meal Ideas" onClick={handleMealClick} />
-                <NavElement text="Workout Plans" onClick={handleWorkoutClick} />
-                <NavElement text="Self Care" onClick={handleSelfCareClick} />
+            <ul className="navbar-desktop flex bg-red-500 flex-row justify-evenly px-5">
+                {NavbarIds.map((page, index) => (
+                    <NavElement
+                        key={page}
+                        text={page.charAt(0).toUpperCase() + page.slice(1)}
+                        onClick={() => handleClick(index)}
+                    />
+                ))}
             </ul>
         </nav>
     );
