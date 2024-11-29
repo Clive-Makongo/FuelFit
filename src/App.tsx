@@ -1,13 +1,13 @@
-import Card from './components/manual/card'
-import Navbar from './components/manual/NavDesk/Navbar'
+import Home from './containers/Home'
+import { PageProvider } from './components/manual/Context/pageContext'
 import './index.css'
 
 function App() {
   return (
     <>
-      <Navbar />
-      <div className="bg-blue-500 p-4 text-white">Test Styling</div>
-      <Card/>
+      <PageProvider>
+        <Home />
+      </PageProvider>
     </>
   )
 }
