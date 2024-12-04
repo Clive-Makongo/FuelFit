@@ -1,6 +1,6 @@
 import NavElement from "./NavElement";
-import { useState } from "react";
 import { motion } from "motion/react"; 
+import { useState } from "react";
 // MAYBE WORK ON MAKING THE DROPDOWN ANIMATE INDIVIDUALLY?
 
 interface NavbarProps {
@@ -11,7 +11,7 @@ interface NavbarProps {
 // array holding all the pages
 const NavbarIds: string[] = ['home', 'meal', 'workOut', 'selfCare'];
 
-const Navbar = ({selectedPage, setSelectedPage}: NavbarProps): JSX.Element => {
+const Navbar = ({setSelectedPage}: NavbarProps): JSX.Element => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);  // hamburger menu state
 
     // function to select which page i'm clicking from the array

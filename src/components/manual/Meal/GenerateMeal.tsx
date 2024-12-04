@@ -1,3 +1,4 @@
+import { p } from "framer-motion/client";
 import { motion } from "motion/react";
 
 // defined type for the input form
@@ -12,15 +13,27 @@ interface GenerateMealProps {
 const GenerateMeal = ({ info, placeholder }: GenerateMealProps): JSX.Element => {
 
     return (
-        <motion.input
-            type={info}
-            placeholder={placeholder}
-            name={placeholder}
-            id={`${info}-meal-input`}
-            className="px-2 py-1 border rounded-md"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }} />
+        <div className="flex flex-col">
+            {info === 'text' && 
+                <p>
+                    Pick a Diet
+                </p>
+            }
+            {info === 'number' &&
+                <p className="">
+                    How many calories
+                </p>
+            } 
+            <motion.input
+                className="border rounded-md"
+                type={info}
+                placeholder={placeholder}
+                name={placeholder}
+                id={`${info}-meal-input`}
+                whileHover={{ scale: 1.05 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }} />
+        </div>
     )
 };
 

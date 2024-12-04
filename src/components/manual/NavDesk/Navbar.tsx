@@ -16,8 +16,8 @@ const Navbar = (): JSX.Element => {
     };
 
     return (
-        <nav>
-            <ul className="navbar-desktop flex bg-red-500 flex-row justify-evenly px-5">
+        <nav className="flex flex-row w-full">
+            <ul className="w-full navbar-desktop flex bg-red-500 flex-row justify-evenly px-5">
                 {NavbarIds.map((page, index) => (
                     <NavElement
                         key={page}
