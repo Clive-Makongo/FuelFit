@@ -15,17 +15,17 @@ const GenerateMeal = ({ info, placeholder }: GenerateMealProps): JSX.Element => 
     return (
         <div className="flex flex-col">
             {info === 'text' && 
-                <p>
+                <p className="p-4">
                     Pick a Diet
                 </p>
             }
             {info === 'number' &&
-                <p className="">
+                <p className="p-4">
                     How many calories
                 </p>
             } 
             <motion.input
-                className="border rounded-md"
+                className="border-2 border-black rounded-lg"
                 type={info}
                 placeholder={placeholder}
                 name={placeholder}
