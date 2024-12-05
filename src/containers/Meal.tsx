@@ -21,9 +21,7 @@ const Meal = (): JSX.Element => {
                         <GenerateMeal info="text" placeholder="Enter meal details" />
                     </section>
                     <div className="flex flex-col md:flex-row justify-evenly w-full md:w-4/5">
-                        {meals.map((meal, index) => (
-                            <MealSegment meal={meal} key={index} />
-                        ))}
+                        
                     </div>
                 </div>
             ) : (
