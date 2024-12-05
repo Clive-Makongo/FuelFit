@@ -1,13 +1,12 @@
-import MealSegment from "@/components/manual/Meal/MealSegment";
 import GenerateMeal from "@/components/manual/Meal/GenerateMeal";
+import Slide from "@/components/manual/Slide/Slide";
 import { useWindowSize } from "@/utils/useWindowSize";
 
 const Meal = (): JSX.Element => {
     const { width } = useWindowSize();
     const isMobile: boolean = width < 768;
     // API CALLS WITH IMAGES AND CALORIE DATA
-    const meals: string[] = ['breakfast', 'lunch', 'dinner'];
-    return (
+        return (
         <>
             {/* Mobile Version */}
             {isMobile ? (
@@ -21,7 +20,7 @@ const Meal = (): JSX.Element => {
                         <GenerateMeal info="text" placeholder="Enter meal details" />
                     </section>
                     <div className="flex flex-col md:flex-row justify-evenly w-full md:w-4/5">
-                        
+                        <Slide/>
                     </div>
                 </div>
             ) : (

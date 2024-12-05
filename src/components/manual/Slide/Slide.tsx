@@ -7,16 +7,28 @@ interface SlideProps {
     calories: number // will be API response
 };
 
-const Slide = ({ imgSrc, calories }: SlideProps): JSX.Element => {
+const meals: string[] = ['breakfast', 'lunch', 'dinner'];
+
+
+const Slide = (): JSX.Element => {
     const [currentSlide, setCurrentSlide] = useState<SlideProps[]>([]); // array holding breakfast lunch and dinner
     const [slideIndex, setSlideIndex] = useState<number>(0); // track which slide we are on
     // Need a function to swap the slides
     // held in state
 
-    const currentSlide = (): JSX.Element => {
+    const handleForward = () => {
+        setSlideIndex(prev => prev === meals.length - 1 ? 0 : prev + 1)
+    };
+
+    const handleBackward = () => {
+        setSlideIndex(prev => prev === 0 ? meals.length - 1 : prev - 1)
+    };
+
+
+    const renderCurrentSlide = (): JSX.Element => {
 
         return (
-            <MealSegment meal={ } />
+            <MealSegment meal={meals[slideIndex]} />
         );
     };
     // use motion to swap the images
@@ -30,7 +42,9 @@ const Slide = ({ imgSrc, calories }: SlideProps): JSX.Element => {
 
     return (
         <>
-            
+            {renderCurrentSlide()} 
+            <button onClick={handleBackward}>Prev Slide</button>
+            <button onClick={handleForward}> Next Slide</button>  
         </>
     )
 };
