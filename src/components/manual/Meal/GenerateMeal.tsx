@@ -1,4 +1,3 @@
-import { p } from "framer-motion/client";
 import { motion } from "motion/react";
 
 // defined type for the input form
