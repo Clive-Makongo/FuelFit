@@ -35,21 +35,22 @@ const Slide = (): JSX.Element => {
 
     const renderCurrentSlide = (): JSX.Element => {
 
-        return ( 
-            <AnimatePresence>
+        return (
+            <>
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
+                    key={slideIndex}
+                    initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ scale: 2 }}
-                    transition={{ duration: 0.5 }}
-                    whileHover={{ scale: 1.015 }}
+                    transition={{ duration: 0.3, delay: 1, ease: "linear" }}
+                    whileHover={{ scale: 1 }}
                     className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-full"
                 >
                     <img className='w-full' src={currentImage} alt="meal-image" />
                     <h1 className='p-4  font-bold w-1/2'>{meals[slideIndex]}</h1>
                     <p className="text-2xl p-4 text-center font-bold bg-red-500">Data</p>
                 </motion.div>
-            </AnimatePresence>
+            </>
 
         );
     };

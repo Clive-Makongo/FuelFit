@@ -10,7 +10,7 @@ const Meal = (): JSX.Element => {
         <>
             {/* Mobile Version */}
             {isMobile ? (
-                <div className="meal-page bg-yellow-500 min-h-[80vh] text-center w-10/12">
+                <div className="meal-page bg-yellow-500 min-h-[80vh] text-center w-full">
                     <h1 className="text-2xl font-bold">Meal Page</h1>
                     <p style={{ paddingBottom: '2%' }} className="font-bold mb-5 pb-12">This is the Meal Page.</p>
                     <section
