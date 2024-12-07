@@ -22,6 +22,28 @@ const Slide = (): JSX.Element => {
     // Need a function to swap the slides
     // held in state
 
+    // variants for slide
+    const slideVariants = {
+        enter: {
+            opacity: 0,
+            x: 100,
+            scale: 1
+        },
+        center: {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            transition: {
+                duration: 0.5
+            }
+        },
+        exit: {
+            opacity: 0,
+            x: -100,
+            scale: 0.8
+        }
+    };
+
     const handleForward = () => {
         setSlideIndex(prev => prev === meals.length - 1 ? 0 : prev + 1);
     };
@@ -36,13 +58,13 @@ const Slide = (): JSX.Element => {
     const renderCurrentSlide = (): JSX.Element => {
 
         return (
-            <>
+            <AnimatePresence>
                 <motion.div
                     key={slideIndex}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ scale: 2 }}
-                    transition={{ duration: 0.3, delay: 1, ease: "linear" }}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
                     whileHover={{ scale: 1 }}
                     className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-full"
                 >
@@ -50,7 +72,7 @@ const Slide = (): JSX.Element => {
                     <h1 className='p-4  font-bold w-1/2'>{meals[slideIndex]}</h1>
                     <p className="text-2xl p-4 text-center font-bold bg-red-500">Data</p>
                 </motion.div>
-            </>
+            </AnimatePresence>
 
         );
     };
