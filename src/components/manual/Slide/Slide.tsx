@@ -35,7 +35,7 @@ const Slide = (): JSX.Element => {
 
     const renderCurrentSlide = (): JSX.Element => {
 
-        return (
+        return ( 
             <AnimatePresence>
                 <motion.div
                     
