@@ -15,7 +15,7 @@ const picMap: Record<string, string> = {
     'lunch': pic2,
     'dinner': pic3
 };
- 
+
 
 const Slide = (): JSX.Element => {
     const [slideIndex, setSlideIndex] = useState<number>(0); // track which slide we are on
@@ -38,7 +38,11 @@ const Slide = (): JSX.Element => {
         return (
             <AnimatePresence>
                 <motion.div
+                    
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={{ scale: 2 }}
+                    transition={{ duration: 0.5 }}
                     whileHover={{ scale: 1.015 }}
                     className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-full"
                 >
