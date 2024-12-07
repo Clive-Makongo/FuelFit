@@ -38,7 +38,6 @@ const Slide = (): JSX.Element => {
         return ( 
             <AnimatePresence>
                 <motion.div
-                    
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ scale: 2 }}
