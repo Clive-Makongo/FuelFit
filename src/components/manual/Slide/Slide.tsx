@@ -1,6 +1,6 @@
 // Need to get breakfast lunch and dinner
 import { useState } from "react";
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import pic1 from '../../../assets/bg-image.jpg'
 import pic2 from '../../../assets/light.avif'
 import pic3 from '../../../assets/construction.jpeg'
@@ -76,11 +76,16 @@ const Slide = (): JSX.Element => {
                     custom={direction}
                     exit="exit"
                     drag="x"
-                    onDragEnd={(e, {offset, velocity}) => {
-                        const swipe = swipePower(offset.x, velocity.x)
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={1}
+                    onDragEnd={(e, { offset, velocity }) => {
+                        const swipe = swipePower(offset.x, velocity.x);
+
                         if (swipe < -swipeConfidenceThreshold) {
-                            handleForward();
-                        } else if ( swipe >)
+                            handleBackward();  // Swipe left
+                        } else if (swipe > swipeConfidenceThreshold) {
+                            handleForward();  // Swipe right
+                        }
                     }}
                     whileHover={{ scale: 1 }}
                     className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-full"
