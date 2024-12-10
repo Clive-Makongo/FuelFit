@@ -1,12 +1,16 @@
 import GenerateMeal from "@/components/manual/Meal/GenerateMeal";
+import MealSegment from "@/components/manual/Meal/MealSegment";
 import Slide from "@/components/manual/Slide/Slide";
 import { useWindowSize } from "@/utils/useWindowSize";
+
+const meals: string[] = ['breakfast', 'lunch', 'dinner'];
+
 
 const Meal = (): JSX.Element => {
     const { width } = useWindowSize();
     const isMobile: boolean = width < 768;
     // API CALLS WITH IMAGES AND CALORIE DATA
-        return (
+    return (
         <>
             {/* Mobile Version */}
             {isMobile ? (
@@ -20,12 +24,26 @@ const Meal = (): JSX.Element => {
                         <GenerateMeal info="text" placeholder="Enter meal details" />
                     </section>
                     <div className="flex flex-col md:flex-row justify-evenly w-full md:w-4/5">
-                        <Slide/>
+                        {/* Render the slide for the mobile view */}
+                        <Slide />
                     </div>
                 </div>
             ) : (
+                    // DESKTOP VERSION
                 <div>
-                    DESKTOP
+                    <section
+                        className="inputs flex flex-row justify-evenly w-4/5 mb-6"
+                    >
+                        <GenerateMeal info="number" placeholder="Enter calories" />
+                        <GenerateMeal info="text" placeholder="Enter meal details" />
+                    </section>
+                    <div className="flex flex-row">
+                        {meals.map((meal, id) => (
+                            <MealSegment meal={meal}/>
+                        ))}
+                    </div>
+
+
                 </div>
             )}
         </>
