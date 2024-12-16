@@ -21,7 +21,7 @@ const MealSegment = ({ meal }: { meal: string }): JSX.Element => {
     return (
         <motion.div
             whileHover={{ scale: 1.015 }}
-            className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-full"
+            className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-fit"
         >
             <img className='w-full' src={mealImage} alt="meal-image" />
             <h1 className='p-4  font-bold w-1/2'>{meal.toUpperCase() }</h1>

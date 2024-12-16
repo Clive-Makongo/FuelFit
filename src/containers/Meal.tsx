@@ -30,16 +30,16 @@ const Meal = (): JSX.Element => {
                 </div>
             ) : (
                     // DESKTOP VERSION
-                <div>
+                <div className="bg-yellow-500">
                     <section
                         className="inputs flex flex-row justify-evenly w-4/5 mb-6"
                     >
                         <GenerateMeal info="number" placeholder="Enter calories" />
                         <GenerateMeal info="text" placeholder="Enter meal details" />
                     </section>
-                    <div className="flex flex-row">
+                    <div className="grid grid-cols-3 gap-2 w-full">
                         {meals.map((meal, id) => (
-                            <MealSegment meal={meal}/>
+                            <MealSegment key={id} meal={meal}/>
                         ))}
                     </div>
 
