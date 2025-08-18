@@ -4,21 +4,52 @@ import MealSegment from "@/components/manual/Meal/MealSegment";
 import Slide from "@/components/manual/Slide/Slide";
 import { useWindowSize } from "@/utils/useWindowSize";
 import calories from "../utils/coloriesApi";
-import { flushSync } from "react-dom";
+import {motion} from "motion/react"
 
 const meals: string[] = ['breakfast', 'lunch', 'dinner'];
 
-interface Data {
+interface Diet {
     calories: number;
     diet: string
 };
 
+interface MealType {
+    breakfast: string,
+    lunch: string,
+    dinner: string,
+};
+
+interface NutritionalInfo {
+    calories: number,
+    carbohydrates: number,
+    fat: number,
+    protien: number,
+};
+
+// holds image src
+interface MealImage {
+    breakfast: string,
+    lunch: string,
+    dinner: string
+}
+
 const Meal = (): JSX.Element => {
-    const [caloryData, setCaloryData] = useState<Data>({ calories: 0, diet: "" })
-    const [load, setLoad] = useState<boolean>(false)
+    const [caloryData, setCaloryData] = useState<Diet>({ calories: 0, diet: "" });
+    const [caloriesSet, setCalories] = useState<number | string>(0);
+    const [dietSet, setDiet] = useState<string>("");
+    const [load, setLoad] = useState<boolean>(false);
+    const [mealType, setMealType] = useState<MealType>({ breakfast: '', lunch: '', dinner: ''});
+    const [nutrition, setNutritional] = useState<NutritionalInfo>({ calories: 0, carbohydrates: 0, fat: 0, protien: 0 });
+    const [mealImage, setMealImage] = useState<MealImage>({breakfast: '', lunch: '', dinner: ''})
     const { width } = useWindowSize();
     const isMobile: boolean = width < 768;
     // API CALLS WITH IMAGES AND CALORIE DATA
+
+    useEffect(( )=> {
+        console.log("CALORIES SET : ", caloriesSet);
+        console.log("DIET SET : ", dietSet);
+
+    }, [caloriesSet,  dietSet])
 
     const handleGenerateMeal = async () => {
         console.log("Hello World")
@@ -26,17 +57,16 @@ const Meal = (): JSX.Element => {
             setLoad(true);
             const response = await calories(2000, 'keto');
             console.log(response)
-            setCaloryData(response)
+            setCaloryData({ calories: response.meal, diet: response.meal })
             console.log(caloryData, 'Calory Data')
-            
-        } catch (error) { 
+
+        } catch (error) {
             console.log("Error fetching meal data")
         }
         finally {
             setLoad(false)
         }
     }
-
 
     return (
         <>
@@ -47,10 +77,12 @@ const Meal = (): JSX.Element => {
                     <p style={{ paddingBottom: '2%' }} className="font-bold mb-5 pb-12">This is the Meal Page.</p>
                     <section
                         className="inputs flex flex-row justify-evenly w-4/5 mb-6"
-                    >
-                        <GenerateMeal info="number" placeholder="Enter calories" />
-                        <GenerateMeal info="text" placeholder="Enter meal details" />
-                        
+                    ><input
+                            type="number"
+                            onChange={(e) => setCalories(e.target.value)}
+                            value={caloriesSet}
+                        />
+
                     </section>
                     <div className="flex flex-col md:flex-row justify-evenly w-full md:w-4/5">
                         {/* Render the slide for the mobile view */}
@@ -69,17 +101,27 @@ const Meal = (): JSX.Element => {
                     <section
                         className="inputs flex flex-row justify-evenly w-4/5 mb-6"
                     >
-                        <GenerateMeal info="number" placeholder="Enter calories" />
-                        <GenerateMeal info="text" placeholder="Enter meal details" />
-                            <button
-                                onClick={handleGenerateMeal}
-                                className="px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-600 transition-colors"
-                            >
-                                Get Data
-                            </button>
+                            <input
+                                className="set-calories border-2 border-black rounded-lg"
+                                type="number"
+                                onChange={(e) => setCalories(e.target.value)}
+                                value={caloriesSet}
+                            />
+                            <input
+                                className="set-diet border-2 border-black rounded-lg"
+                                type="text"
+                                onChange={(e) => setDiet(e.target.value)}
+                                value={dietSet}
+                            />
+                        <button
+                            onClick={handleGenerateMeal}
+                            className="px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-600 transition-colors"
+                        >
+                            Get Data
+                        </button>
                     </section>
-                        <div className="grid grid-cols-3 gap-2 w-full">
-                           
+                    <div className="grid grid-cols-3 gap-2 w-full meals">
+
                         {meals.map((meal, id) => (
                             <MealSegment key={id} meal={meal} />
                         ))}

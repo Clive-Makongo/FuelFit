@@ -6,10 +6,12 @@ type InputType = 'text' | 'number'
 // define props that will set the input fields
 interface GenerateMealProps {
     info: InputType,
-    placeholder?: string
+    placeholder?: string,
+    value: string | number,
+    onChange?: (value: string | number) => void
 };
 
-const GenerateMeal = ({ info, placeholder }: GenerateMealProps): JSX.Element => {
+const GenerateMeal = ({ info, placeholder, value, onChange }: GenerateMealProps): JSX.Element => {
 
     return (
         <div className="flex flex-col">
@@ -26,12 +28,17 @@ const GenerateMeal = ({ info, placeholder }: GenerateMealProps): JSX.Element => 
             <motion.input
                 className="border-2 border-black rounded-lg"
                 type={info}
+                value={value}
                 placeholder={placeholder}
                 name={placeholder}
                 id={`${info}-meal-input`}
                 whileHover={{ scale: 1.05 }}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }} />
+                animate={{ opacity: 1 }}
+                onChange={e =>
+                    onChange?.(info === 'number' ? Number(e.target.value) : e.target.value)}
+            />
+            
         </div>
     )
 };
