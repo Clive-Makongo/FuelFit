@@ -1,6 +1,6 @@
 import NavElement from "./NavElement";
 import { motion } from "motion/react"; 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // MAYBE WORK ON MAKING THE DROPDOWN ANIMATE INDIVIDUALLY?
 
 interface NavbarProps {
@@ -14,17 +14,17 @@ const NavbarIds: string[] = ['home', 'meal', 'workOut', 'selfCare'];
 const Navbar = ({setSelectedPage}: NavbarProps): JSX.Element => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);  // hamburger menu state
 
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);  // Toggle menu state
+
     // function to select which page i'm clicking from the array
     // sends the selected page prop back up the tree
     const handleClick = (page: number): void => {
         if(page >= 0 && page <= NavbarIds.length) {
             setSelectedPage(NavbarIds[page]);
             setIsMenuOpen(!isMenuOpen);
+            console.log("IS MENU OPEN: ", isMenuOpen);
         };        
     };
-
-   
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);  // Toggle menu state
 
     return (
         <nav className="navbar-mobile relative flex flex-row justify-between items-center font-mono bg-red-500">
@@ -42,7 +42,7 @@ const Navbar = ({setSelectedPage}: NavbarProps): JSX.Element => {
             </button>
 
             {/* Menu Items (Animated) */}
-            <motion.ul
+            {isMenuOpen && <motion.ul
                 className="absolute top-16 left-0 w-full bg-red-500 text-white flex flex-col gap-4 p-6 md:hidden"
                 initial={{ opacity: 0, y: -20 }}  // Initial position
                 animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : -20 }}  // Toggle visibility
@@ -56,7 +56,7 @@ const Navbar = ({setSelectedPage}: NavbarProps): JSX.Element => {
                         onClick={() => handleClick(index)}
                     />
                 ))}
-            </motion.ul>
+            </motion.ul>}
         </nav>
     );
 };
