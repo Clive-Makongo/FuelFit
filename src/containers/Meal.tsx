@@ -23,7 +23,7 @@ interface NutritionalInfo {
     calories: number,
     carbohydrates: number,
     fat: number,
-    protien: number,
+    protein: number,
 };
 
 // holds image src
@@ -39,7 +39,7 @@ const Meal = (): JSX.Element => {
     const [dietSet, setDiet] = useState<string>("");
     const [load, setLoad] = useState<boolean>(false);
     const [mealType, setMealType] = useState<MealType>({ breakfast: '', lunch: '', dinner: ''});
-    const [nutrition, setNutritional] = useState<NutritionalInfo>({ calories: 0, carbohydrates: 0, fat: 0, protien: 0 });
+    const [nutrition, setNutritional] = useState<NutritionalInfo>({ calories: 0, carbohydrates: 0, fat: 0, protein: 0 });
     const [mealImage, setMealImage] = useState<MealImage>({breakfast: '', lunch: '', dinner: ''})
     const { width } = useWindowSize();
     const isMobile: boolean = width < 768;
@@ -53,7 +53,9 @@ const Meal = (): JSX.Element => {
 
     useEffect(() => {
         console.log("Updated mealType: ", mealType);
-    }, [mealType]);
+        console.log("Updated Nutrition: ", nutrition);
+        console.log("Updated Image: ", mealImage);
+    }, [mealType, nutrition, mealImage]);
 
     const takeInput = (): JSX.Element => {
         return (
@@ -86,7 +88,10 @@ const Meal = (): JSX.Element => {
             setLoad(true);
             const response = await calories(caloriesSet, dietSet);
             console.log(response)
-            setMealType({breakfast: response.meals[0].title, lunch: response.meals[1].title, dinner: response.meals[2].title})
+            setMealType({ breakfast: response.meals[0].title, lunch: response.meals[1].title, dinner: response.meals[2].title });
+            setMealImage({ breakfast: response.meals[0].image, lunch: response.meals[1].image, dinner: response.meals[2].image });
+            setNutritional({ calories: response.nutrients.calories, carbohydrates: response.nutrients.carbohydrates, protein: response.nutrients.protein, fat: response.nutrients.fat });
+            setMealImage({ breakfast: response.meals[0].image, lunch: response.meals[1].image, dinner: response.meals[2].image })
         } catch (error) {
             console.log("Error fetching meal data")
         }
