@@ -1,6 +1,7 @@
 // Need to get breakfast lunch and dinner
 import { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMealPlanner } from "@/hooks/useMealPlanner";
 import pic1 from '../../../assets/bg-image.jpg'
 import pic2 from '../../../assets/light.avif'
 import pic3 from '../../../assets/construction.jpeg'
@@ -15,12 +16,32 @@ const picMap: Record<string, string> = {
     'dinner': pic3
 };
 
+// image sources
+interface SlideProps {
+    mealImages: {
+        breakfast: string;
+        lunch: string;
+        dinner: string;
+    };
+    mealTypes: {
+        breakfast: string;
+        lunch: string;
+        dinner: string;
+    };
+}
 
-const Slide = (): JSX.Element => {
+
+const Slide = ({ mealImages, mealTypes }: SlideProps): React.FC<SlideProps> => {
     const [slideIndex, setSlideIndex] = useState<number>(0); // track which slide we are on
     const [direction, setDirection] = useState<number>(0); // state that tracks direction
     // Need a function to swap the slides
     // held in state
+    const currentMeal: string = meals[slideIndex];
+    const currentImage: string = mealImages[currentMeal] || '';
+    const currentMealType: string = mealTypes[currentMeal] || currentMeal;
+
+    // const currentMeal: string = meals[slideIndex];
+    // const currentImage: string = sources[slideIndex];
 
     // variants for slide
     const slideVariants = {
@@ -49,7 +70,7 @@ const Slide = (): JSX.Element => {
         }
     };
 
-    
+
 
     const handleForward = () => {
         setSlideIndex(prev => prev === meals.length - 1 ? 0 : prev + 1);
@@ -60,9 +81,6 @@ const Slide = (): JSX.Element => {
         setSlideIndex(prev => prev === 0 ? meals.length - 1 : prev - 1);
         setDirection(-1);
     };
-
-    const currentMeal = meals[slideIndex];
-    const currentImage = picMap[currentMeal];
 
     const renderCurrentSlide = (): JSX.Element => {
 
@@ -90,8 +108,8 @@ const Slide = (): JSX.Element => {
                     whileHover={{ scale: 1 }}
                     className="flex flex-col border-black border  text-center meal-segment rounded-lg m-2 h-full"
                 >
-                    <img className='w-full' src={currentImage} alt="meal-image" />
-                    <h1 className='p-4  font-bold w-1/2'>{meals[slideIndex]}</h1>
+                    {currentImage && <img className='w-full' src={currentImage} alt="meal-image" />}
+                    <h1 className='p-4  font-bold w-1/2'>{currentMealType}</h1>
                     <p className="text-2xl p-4 text-center font-bold bg-red-500">Data</p>
                 </motion.div>
             </AnimatePresence>

@@ -1,147 +1,82 @@
-import { useEffect, useState } from "react";
-import GenerateMeal from "@/components/manual/Meal/GenerateMeal";
 import MealSegment from "@/components/manual/Meal/MealSegment";
+import InputSection from "@/components/manual/Meal/InputSection";
+import ErrorDisplay from "@/components/manual/Meal/ErrorDisplay";
+import LoadingSpinner from "@/components/manual/Meal/LoadingSpinner";
+import NutritionSummary from "@/components/manual/Meal/NutritionSummary";
 import Slide from "@/components/manual/Slide/Slide";
-import { useWindowSize } from "@/utils/useWindowSize";
-import calories from "../utils/coloriesApi";
-import {motion} from "motion/react"
-
-const meals: string[] = ['breakfast', 'lunch', 'dinner'];
-
-interface Diet {
-    calories: number;
-    diet: string
-};
-
-interface MealType {
-    breakfast: string,
-    lunch: string,
-    dinner: string,
-};
-
-interface NutritionalInfo {
-    calories: number,
-    carbohydrates: number,
-    fat: number,
-    protein: number,
-};
-
-// holds image src
-interface MealImage {
-    breakfast: string,
-    lunch: string,
-    dinner: string
-}
+import { useMealPlanner } from "@/hooks/useMealPlanner";
+import { motion } from "motion/react";
 
 const Meal = (): JSX.Element => {
-    const [caloryData, setCaloryData] = useState<Diet>({ calories: 0, diet: "" });
-    const [caloriesSet, setCalories] = useState<number | string>(0);
-    const [dietSet, setDiet] = useState<string>("");
-    const [load, setLoad] = useState<boolean>(false);
-    const [mealType, setMealType] = useState<MealType>({ breakfast: '', lunch: '', dinner: ''});
-    const [nutrition, setNutritional] = useState<NutritionalInfo>({ calories: 0, carbohydrates: 0, fat: 0, protein: 0 });
-    const [mealImage, setMealImage] = useState<MealImage>({breakfast: '', lunch: '', dinner: ''})
-    const { width } = useWindowSize();
-    const isMobile: boolean = width < 768;
-    // API CALLS WITH IMAGES AND CALORIE DATA
-
-    useEffect(() => {
-        console.log("CALORIES SET : ", caloriesSet);
-        console.log("DIET SET : ", dietSet);
-
-    }, [caloriesSet, dietSet]);
-
-    useEffect(() => {
-        console.log("Updated mealType: ", mealType);
-        console.log("Updated Nutrition: ", nutrition);
-        console.log("Updated Image: ", mealImage);
-    }, [mealType, nutrition, mealImage]);
-
-    const takeInput = (): JSX.Element => {
-        return (
-            <>
-                <input
-                    className="set-calories border-2 border-black rounded-lg"
-                    type="number"
-                    onChange={(e) => setCalories(e.target.value)}
-                    value={caloriesSet}
-                />
-                <input
-                    className="set-diet border-2 border-black rounded-lg"
-                    type="text"
-                    onChange={(e) => setDiet(e.target.value)}
-                    value={dietSet}
-                />
-                <button
-                    onClick={handleGenerateMeal}
-                    className="px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-600 transition-colors"
-                >
-                    Get Data
-                </button>
-            </>
-        )
-    }
-
-    const handleGenerateMeal = async () => {
-        console.log("Hello World")
-        try {
-            setLoad(true);
-            const response = await calories(caloriesSet, dietSet);
-            console.log(response)
-            setMealType({ breakfast: response.meals[0].title, lunch: response.meals[1].title, dinner: response.meals[2].title });
-            setMealImage({ breakfast: response.meals[0].image, lunch: response.meals[1].image, dinner: response.meals[2].image });
-            setNutritional({ calories: response.nutrients.calories, carbohydrates: response.nutrients.carbohydrates, protein: response.nutrients.protein, fat: response.nutrients.fat });
-            setMealImage({ breakfast: response.meals[0].image, lunch: response.meals[1].image, dinner: response.meals[2].image })
-        } catch (error) {
-            console.log("Error fetching meal data")
-        }
-        finally {
-            setLoad(false)
-        }
-    }
+    // hooks
+    const {
+        isMobile,
+        isLoading,
+        error,
+        nutrition,
+        mealType,
+        mealImage,
+        imagesLoaded,
+        handleGenerateMeal,
+        caloriesSet,
+        dietSet,
+        setCalories,
+        setDiet,
+        isFormValid,
+        MEALS
+    } = useMealPlanner();
 
     return (
-        <>
-            {/* Mobile Version */}
-            {isMobile ? (
-                <div className="meal-page bg-yellow-500 min-h-[80vh] text-center w-full">
-                    <h1 className="text-2xl font-bold">Meal Page</h1>
-                    <p style={{ paddingBottom: '2%' }} className="font-bold mb-5 pb-12">This is the Meal Page.</p>
-                    <section
-                        className="inputs flex flex-row justify-evenly w-4/5 mb-6"
-                    >
-                        {takeInput()}
-                    </section>
-                    <div className="flex flex-col md:flex-row justify-evenly w-full md:w-4/5">
-                        {/* Render the slide for the mobile view */}
-                        <button
-                            onClick={handleGenerateMeal}
-                            className="px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-600 transition-colors"
-                        >
-                            NAME
-                        </button>
-                        <Slide />
-                    </div>
-                </div>
-            ) : (
-                // DESKTOP VERSION
-                <div className="bg-yellow-500">
-                    <section
-                        className="inputs flex flex-row justify-evenly w-4/5 mb-6"
-                    >
-                     {takeInput()}       
-                    </section>
-                    <div className="grid grid-cols-3 gap-2 w-full meals">
+        <div className="meal-page bg-yellow-500 min-h-screen">
+            <div className="container mx-auto px-4 py-8">
+                <header className="text-center mb-8">
+                    <h1 className="text-3xl font-bold mb-2">Meal Planner</h1>
+                    <p className="text-lg">Generate personalized meal plans based on your dietary preferences</p>
+                </header>
 
-                        {meals.map((meal, id) => (
-                            <MealSegment key={id} meal={meal} />
+                <InputSection
+                    caloriesSet={caloriesSet}
+                    dietSet={dietSet}
+                    setCalories={setCalories}
+                    setDiet={setDiet}
+                    isFormValid={isFormValid}
+                    isLoading={isLoading}
+                    handleGenerateMeal={handleGenerateMeal}
+                />
+
+                {error && <ErrorDisplay error={error} />}
+
+                {isLoading && <LoadingSpinner />}
+
+                {/* Mobile Version */}
+                {isMobile ? (
+                    <div className="flex flex-col gap-4">
+                        {imagesLoaded && <Slide
+                            mealImages={mealImage}
+                            mealTypes={mealType}
+                         />}
+                    </div>
+                ) : (
+                    /* Desktop Version */
+                    <div className="grid grid-cols-3 gap-6 w-full">
+                        {imagesLoaded && MEALS.map((meal, index) => (
+                            <MealSegment
+                                key={index}
+                                meal={meal}
+                                title={mealType[meal]}
+                                image={mealImage[meal]}
+                                isLoading={isLoading}
+                            />
                         ))}
                     </div>
+                )}
 
-
-                </div>
-            )}
-        </>
+                {/* Nutrition Summary */}
+                {nutrition.calories > 0 && <NutritionSummary
+                    nutrition={nutrition}
+                />}
+            </div>
+        </div>
     );
 };
 
