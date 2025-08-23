@@ -1,3 +1,4 @@
+import MealHeader from "@/components/manual/Meal/MealHeader"
 import MealSegment from "@/components/manual/Meal/MealSegment";
 import InputSection from "@/components/manual/Meal/InputSection";
 import ErrorDisplay from "@/components/manual/Meal/ErrorDisplay";
@@ -29,10 +30,7 @@ const Meal = (): JSX.Element => {
     return (
         <div className="meal-page bg-yellow-500 min-h-screen">
             <div className="container mx-auto px-4 py-8">
-                <header className="text-center mb-8">
-                    <h1 className="text-3xl font-bold mb-2">Meal Planner</h1>
-                    <p className="text-lg">Generate personalized meal plans based on your dietary preferences</p>
-                </header>
+                <MealHeader/>
 
                 <InputSection
                     caloriesSet={caloriesSet}

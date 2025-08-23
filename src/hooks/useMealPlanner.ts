@@ -98,20 +98,33 @@ export const useMealPlanner = () => {
             setImagesLoaded(false);
 
             try {
-                const imagePromises = [
-                    imageAPI(b).catch(() => ({ data: { results: [{ image: "" }] } })),
-                    imageAPI(l).catch(() => ({ data: { results: [{ image: "" }] } })),
-                    imageAPI(d).catch(() => ({ data: { results: [{ image: "" }] } })),
-                ];
+                // const imagePromises = [
+                //     imageAPI(b).catch(() => ({ data: { results: [{ image: "" }] } })),
+                //     imageAPI(l).catch(() => ({ data: { results: [{ image: "" }] } })),
+                //     imageAPI(d).catch(() => ({ data: { results: [{ image: "" }] } })),
+                // ];
 
-                const [breakfastRes, lunchRes, dinnerRes] = await Promise.all(
-                    imagePromises
-                );
+                // console.log("IMAGE PROMISES: ", imagePromises)
+
+                // const [breakfastRes, lunchRes, dinnerRes] = await Promise.all(
+                //     imagePromises
+                // );
+
+                const breakfast = await imageAPI(b).catch(() => ({ data: { results: [{ image: "" }] } }));
+                await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
+            
+                const lunch = await imageAPI(l).catch(() => ({ data: { results: [{ image: "" }] } }));
+                await new Promise(resolve => setTimeout(resolve, 100));
+            
+                const dinner = await imageAPI(d).catch(() => ({ data: { results: [{ image: "" }] } }));
+
+                console.log("DINNER :",breakfast, lunch, dinner )
+
 
                 setMealImage({
-                    breakfast: breakfastRes.data.results[0]?.image || "",
-                    lunch: lunchRes.data.results[0]?.image || "",
-                    dinner: dinnerRes.data.results[0]?.image || "",
+                    breakfast: breakfast.data.results[0]?.image || "",
+                    lunch: lunch.data.results[0]?.image || "",
+                    dinner: dinner.data.results[0]?.image || "",
                 });
             } catch (error) {
                 console.error("Error fetching meal images:", error);
