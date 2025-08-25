@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { useWindowSize } from "@/utils/useWindowSize";
 import caloriesAPI from "@/utils/coloriesAPI";
-import imageAPI from "@/utils/imageAPI";
+
+import nutritionAPI from "@/utils/nutritionAPI";
 
 const MEALS = ["breakfast", "lunch", "dinner"] as const;
 const MOBILE_BREAKPOINT = 768;
@@ -24,6 +25,12 @@ interface MealImage {
     breakfast: string;
     lunch: string;
     dinner: string;
+}
+
+interface mealNutrition {
+    breakfast: {},
+    lunch: {},
+    dinner: {}
 }
 
 interface ApiResponse {
@@ -64,6 +71,12 @@ export const useMealPlanner = () => {
         lunch: "",
         dinner: "",
     });
+
+    const [mealNutrition, setMealNutrition] = useState<mealNutrition>({
+        breakfast: [],
+        lunch: [],
+        dinner: []
+    })
     const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
 
     // Device size
@@ -88,14 +101,51 @@ export const useMealPlanner = () => {
         );
     };
 
-    const getMealImageOptimized = useCallback(
+        // Get Meal Nutrients
+    const retryAPI = async (
+        query: string, 
+        maxRetries: number = 2, 
+        delay: number = 200
+    ): Promise<any> => {
+        let attempt = 0;
+            
+        while (attempt <= maxRetries) {
+            try {
+                const response = await nutritionAPI(query);
+                    
+                // Check if we got actual results
+                if (response?.data?.results?.length > 0 && response.data.results[0]?.image) {
+                    console.log(`✅ ${query} succeeded on attempt ${attempt + 1}`);
+                        return response;
+                }
+                    
+                // If empty results and we have retries left
+                if (attempt < maxRetries) {
+                    console.log(`⚠️ ${query} returned empty, retrying... (attempt ${attempt + 1}/${maxRetries + 1})`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                        attempt++;
+                } else {
+                    console.log(`❌ ${query} failed after ${maxRetries + 1} attempts`);
+                    return { data: { results: [{ image: "" }] } };
+                }
+            } catch (error) {
+                console.error(`❌ ${query} API error on attempt ${attempt + 1}:`, error);
+                    if (attempt === maxRetries) {
+                        return { data: { results: [{ image: "" }] } };
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    attempt++;
+                }
+            }
+        };
+
+const getMealNutrients = useCallback(
         async (b: string, l: string, d: string): Promise<void> => {
             if (!b || !l || !d) {
-                setImagesLoaded(false);
+
                 return;
             }
 
-            setImagesLoaded(false);
 
             try {
                 // const imagePromises = [
@@ -110,26 +160,26 @@ export const useMealPlanner = () => {
                 //     imagePromises
                 // );
 
-                const breakfast = await imageAPI(b).catch(() => ({ data: { results: [{ image: "" }] } }));
+                const breakfast = await retryAPI(b).catch(() => ({ data: { results: [{ image: "" }] } }));
                 await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
             
-                const lunch = await imageAPI(l).catch(() => ({ data: { results: [{ image: "" }] } }));
+                const lunch = await retryAPI(l).catch(() => ({ data: { results: [{ image: "" }] } }));
                 await new Promise(resolve => setTimeout(resolve, 100));
             
-                const dinner = await imageAPI(d).catch(() => ({ data: { results: [{ image: "" }] } }));
+                const dinner = await retryAPI(d).catch(() => ({ data: { results: [{ image: "" }] } }));
 
                 console.log("DINNER :",breakfast, lunch, dinner )
 
-
-                setMealImage({
-                    breakfast: breakfast.data.results[0]?.image || "",
-                    lunch: lunch.data.results[0]?.image || "",
-                    dinner: dinner.data.results[0]?.image || "",
+                setMealNutrition({
+                    breakfast: [breakfast.data.results[0]?.nutrition],
+                    lunch: [lunch.data.results[0]?.nutrition],
+                    dinner: [dinner.data.results[0]?.nutrition.nutrients]
                 });
+               
             } catch (error) {
                 console.error("Error fetching meal images:", error);
             } finally {
-                setImagesLoaded(true);
+                
             }
         },
         []
@@ -162,13 +212,30 @@ export const useMealPlanner = () => {
             });
 
             // Images
-            await getMealImageOptimized(
+            const imageSourceUrl =(meal:number):string => { return `https://img.spoonacular.com/recipes/${response.meals[meal].id}-312x231.jpg`};
+
+            // await getMealImageOptimized(
+            //     response.meals[0].title,
+            //     response.meals[1].title,
+            //     response.meals[1].title
+            // );
+
+            setMealImage({
+                ...mealImage,
+                breakfast: `https://img.spoonacular.com/recipes/${response.meals[0].id}-312x231.jpg`,
+                lunch: `https://img.spoonacular.com/recipes/${response.meals[1].id}-312x231.jpg`,
+                dinner: `https://img.spoonacular.com/recipes/${response.meals[2].id}-312x231.jpg`
+            })
+
+            setImagesLoaded(true)
+
+            // Nutrition
+            getMealNutrients(
                 response.meals[0].title,
                 response.meals[1].title,
                 response.meals[2].title
             );
 
-            // Nutrition
             setNutrition({
                 calories: response.nutrients.calories,
                 carbohydrates: response.nutrients.carbohydrates,
@@ -186,7 +253,7 @@ export const useMealPlanner = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [caloriesSet, dietSet, isFormValid, getMealImageOptimized]);
+    }, [caloriesSet, dietSet, isFormValid, getMealNutrients]);
 
     // Debug logs in dev
     useEffect(() => {
@@ -194,6 +261,7 @@ export const useMealPlanner = () => {
             console.log("Updated mealType:", mealType);
             console.log("Updated nutrition:", nutrition);
             console.log("Updated images:", mealImage);
+            console.log("GET MEAL NUTRIENTS: ", mealNutrition);
         }
     }, [mealType, nutrition, mealImage]);
 
