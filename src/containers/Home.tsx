@@ -8,7 +8,7 @@ import { usePage } from '@/components/manual/Context/pageContext';
 import { useWindowSize } from '@/utils/useWindowSize';
 
 function Home(): JSX.Element {
-    const [mobilePage, setMobilePage] = useState<string>("home"); // prop drilling mobile state
+    const [mobilePage, setMobilePage] = useState<string>('home'); // prop drilling mobile state
     const { width } = useWindowSize(); // get size of screen
     const { selectedPage } = usePage(); // pull selected page from context
 
@@ -18,7 +18,6 @@ function Home(): JSX.Element {
     return (
         <>
             <>
-                {console.log(mobilePage)}
             </>
             {isMobile && mobilePage ? (
                 <div>

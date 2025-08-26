@@ -640,6 +640,14 @@ body {
   margin: 0.5rem;
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -654,6 +662,10 @@ body {
 
 .inline-flex {
   display: inline-flex;
+}
+
+.grid {
+  display: grid;
 }
 
 .hidden {
@@ -676,10 +688,6 @@ body {
   height: 2.25rem;
 }
 
-.h-\[200px\] {
-  height: 200px;
-}
-
 .h-\[50px\] {
   height: 50px;
 }
@@ -688,12 +696,21 @@ body {
   height: var(--radix-navigation-menu-viewport-height);
 }
 
-.h-\[20px\] {
-  height: 20px;
+.h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .min-h-\[80vh\] {
   min-height: 80vh;
+}
+
+.w-1\/2 {
+  width: 50%;
 }
 
 .w-1\/4 {
@@ -706,6 +723,10 @@ body {
 
 .w-3 {
   width: 0.75rem;
+}
+
+.w-4\/5 {
+  width: 80%;
 }
 
 .w-full {
@@ -739,6 +760,10 @@ body {
   list-style-type: none;
 }
 
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .flex-row {
   flex-direction: row;
 }
@@ -767,6 +792,10 @@ body {
   justify-content: space-evenly;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .gap-4 {
   gap: 1rem;
 }
@@ -785,6 +814,10 @@ body {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.rounded {
+  border-radius: 0.25rem;
 }
 
 .rounded-lg {
@@ -862,16 +895,6 @@ body {
   background-color: rgb(234 179 8 / var(--tw-bg-opacity, 1));
 }
 
-.bg-yellow-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(113 63 18 / var(--tw-bg-opacity, 1));
-}
-
-.bg-yellow-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(161 98 7 / var(--tw-bg-opacity, 1));
-}
-
 .p-2 {
   padding: 0.5rem;
 }
@@ -899,8 +922,16 @@ body {
   padding-bottom: 0.5rem;
 }
 
+.pb-12 {
+  padding-bottom: 3rem;
+}
+
 .pt-0 {
   padding-top: 0px;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .font-mono {
@@ -1009,6 +1040,11 @@ body {
 
 .hover\:bg-accent:hover {
   background-color: hsl(var(--accent));
+}
+
+.hover\:bg-blue-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-accent-foreground:hover {
@@ -1158,11 +1194,19 @@ body {
     display: none;
   }
 
+  .md\:w-4\/5 {
+    width: 80%;
+  }
+
   .md\:w-\[var\(--radix-navigation-menu-viewport-width\)\] {
     width: var(--radix-navigation-menu-viewport-width);
   }
 
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:flex-row {
+    flex-direction: row;
   }
 }
