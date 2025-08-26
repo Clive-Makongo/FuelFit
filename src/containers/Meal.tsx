@@ -28,7 +28,7 @@ const Meal = (): JSX.Element => {
     } = useMealPlanner();
 
     return (
-        <div className="meal-page bg-yellow-500 min-h-screen">
+        <div className="meal-page bg-cyan-500 min-h-screen">
             <div className="container mx-auto px-4 py-8">
                 <MealHeader/>
 
