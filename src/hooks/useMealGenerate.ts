@@ -18,8 +18,7 @@ interface NutritionalInfo {
 interface ApiResponse {
     meals: { title: string; sourceUrl: string }[];
     nutrients: NutritionalInfo;
-};
-
+}
 
 export const useMealGenerate = () => {
     // Meal/nutrition state
@@ -35,34 +34,35 @@ export const useMealGenerate = () => {
         protein: 0,
     });
 
-    const generateMeals = useCallback(async (calories: number, diet: string): Promise<ApiResponse | null> => {
-        try {
-            const response = caloriesAPI(calories, diet);
+    const generateMeals = useCallback(
+        async (calories: number, diet: string): Promise<ApiResponse | null> => {
+            try {
+                const response = await caloriesAPI(calories, diet);
+                console.log(response, " RESPONSE")
+                setMealType({
+                    breakfast: response.meals[0].title,
+                    lunch: response.meals[1].title,
+                    dinner: response.meals[2].title,
+                });
 
-            setMealType({
-                breakfast: response.meals[0].title,
-                lunch: response.meals[1].title,
-                dinner: response.meals[2].title,
-            });
+                setNutrition({
+                    calories: response.nutrients.calories,
+                    carbohydrates: response.nutrients.carbohydrates,
+                    protein: response.nutrients.protein,
+                    fat: response.nutrients.fat,
+                });
 
-            setNutrition({
-                calories: response.nutrients.calories,
-                carbohydrates: response.nutrients.carbohydrates,
-                protein: response.nutrients.protein,
-                fat: response.nutrients.fat,
-            });
-
-            return response;
-        } catch (error) {
-            console.error("Error generating meals:", error);
-            throw error;
-        }
-
-    }, []);
+                return response;
+            } catch (error) {
+                console.error("Error generating meals:", error);
+                throw error;
+            }
+        },
+        []);
 
     return {
         mealType,
         nutrition,
-        generateMeals
+        generateMeals,
     };
 };
