@@ -23,14 +23,14 @@ function Home(): JSX.Element {
                 <div>
                     {/* Mobile View */}
                     {/* prop drilling navbar */}
-                    <NavMob selectedPage={mobilePage} setSelectedPage={setMobilePage}/>
+                    <NavMob selectedPage={mobilePage} setSelectedPage={setMobilePage} />
                     <div className="bg-blue-500 p-4 w-full text-white">Mobile View</div>
                     {mobilePage === "home" && (
                         <div className='bg-purple-500'>
                             <h1 className="text-2xl font-bold">Welcome Home!</h1>
                             <p>This is the home page content.</p>
                         </div>
-                    )}
+                    )};
 
                     {/* Meal Page */}
                     {mobilePage === "meal" && (
@@ -46,13 +46,14 @@ function Home(): JSX.Element {
                     {mobilePage === "selfCare" && (
                         <SelfCare />
                     )}
-                    
+
                 </div>
             ) : (
                 <>
                     {/* Desktop View */}
                     {/* Using PageProvider for the navbar */}
-                    <NavDesk />
+                    {/* <NavDesk /> */}
+
                     <div className="bg-blue-500 h-[50px] p-4 text-white">Desktop View</div>
 
                     {/* Home Page */}
@@ -63,20 +64,8 @@ function Home(): JSX.Element {
                         </div>
                     )}
 
-                        {/* Meal Page */}
-                        {selectedPage === "meal" && (
-                            <Meal />
-                        )}
+                    {/* Meal Page */}
 
-                        {/* Workout Page */}
-                        {selectedPage === "workOut" && (
-                            <Workout />
-                        )}
-
-                        {/* SelfCare Page */}
-                        {selectedPage === "selfCare" && (
-                            <SelfCare />
-                        )}
                 </>
             )}
         </>

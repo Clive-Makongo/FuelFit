@@ -30,7 +30,7 @@ const Meal = (): JSX.Element => {
     return (
         <div className="meal-page bg-cyan-500 min-h-screen">
             <div className="container mx-auto px-4 py-8">
-                <MealHeader/>
+                <MealHeader />
 
                 <InputSection
                     caloriesSet={caloriesSet}
@@ -52,7 +52,7 @@ const Meal = (): JSX.Element => {
                         {imagesLoaded && <Slide
                             mealImages={mealImage}
                             mealTypes={mealType}
-                         />}
+                        />}
                     </div>
                 ) : (
                     /* Desktop Version */
