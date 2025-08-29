@@ -6,6 +6,7 @@ import Workout from './containers/Workout'
 import SelfCare from './containers/SelfCare'
 import Navbar from './components/manual/Navbar/Navbar'
 import { useWindowSize } from './utils/useWindowSize'
+import { MealProvider } from './components/manual/Context/MealContext'
 import './index.css'
 
 function App() {
@@ -13,17 +14,19 @@ function App() {
   const isMobile: boolean = width < 768
   return (
     <>
-      <PageProvider>
-        {!isMobile && <Navbar />}
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/meal' element={<Meal />} />
-          <Route path='/workout' element={<Workout />} />
-          <Route path='/selfCare' element={<SelfCare />} />
-        </Routes>
+      <MealProvider>
+        <PageProvider>
+          {!isMobile && <Navbar />}
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/meal' element={<Meal />} />
+            <Route path='/workout' element={<Workout />} />
+            <Route path='/selfCare' element={<SelfCare />} />
+          </Routes>
 
-        {/* <Home /> */}
-      </PageProvider>
+          {/* <Home /> */}
+        </PageProvider>
+      </MealProvider>
     </>
   )
 }
