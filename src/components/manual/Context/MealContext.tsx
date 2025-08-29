@@ -1,33 +1,28 @@
-import { useState, useCallback } from "react";
-import caloriesAPI from "@/utils/coloriesAPI";
+import { useState, useCallback, useContext, createContext, ReactNode } from "react";
+import { MealType } from "@/hooks/useMealGenerate";
+import { NutritionalInfo } from "@/hooks/useMealGenerate";
+import { MealImage } from "@/hooks/useMealGenerate";
+import caloriesAPI from "@/utils/coloriesAPI"
+import { ApiResponse } from "@/hooks/useMealGenerate";
+import { useMealGenerate } from "@/hooks/useMealGenerate";
 
-// Types
-export interface MealType {
-    breakfast: string;
-    lunch: string;
-    dinner: string;
-}
+interface MealContextType {
+    mealImage: MealImage;
+    mealType: MealType;
+    nutrition: NutritionalInfo;
+    isLoading?: boolean;
+    error?: string | null;
+    lastGeneratedParams: { calories: number; diet: string } | null;
+    generateMeals: (calories: number, diet: string) => Promise<ApiResponse | null>;
+    clearMeals?: () => void;
+    setMealType: (meals: MealType) => void;
+    setNutrition: (nutrition: NutritionalInfo) => void;
+};
 
-export interface NutritionalInfo {
-    calories: number;
-    carbohydrates: number;
-    fat: number;
-    protein: number;
-}
+const MealContext = createContext<MealContextType | null>(null);
 
-export interface MealImage {
-    breakfast: string;
-    lunch: string;
-    dinner: string;
-}
-
-export interface ApiResponse {
-    meals: { title: string; sourceUrl: string }[];
-    nutrients: NutritionalInfo;
-}
-
-export const useMealGenerate = () => {
-
+export const MealProvider = ({ children }: { children: ReactNode }) => {
+    // const { mealImage, mealType, nutrition, lastGeneratedParams, generateMeals, setLastGenereatedParams, setMealImage } = useMealGenerate();
     // Meal/nutrition state
     const [mealType, setMealType] = useState<MealType>({
         breakfast: "",
@@ -86,14 +81,19 @@ export const useMealGenerate = () => {
         },
         []);
 
-    return {
-        mealType,
-        nutrition,
-        lastGeneratedParams,
-        mealImage,
-        setLastGenereatedParams,
-        generateMeals,
-        setMealImage
 
-    };
+    return (
+        <MealContext.Provider value={{ mealImage, mealType, nutrition, lastGeneratedParams, generateMeals, setLastGenereatedParams, setMealImage }}>
+            {children}
+        </MealContext.Provider>
+    )
+};
+
+export const useMealContext = () => {
+    const ctx = useContext(MealContext);
+    if (!ctx) {
+        throw new Error(`useMealContext must be used within a PageProvider`)
+    }
+
+    return ctx;
 };

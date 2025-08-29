@@ -6,6 +6,7 @@ import LoadingSpinner from "@/components/manual/Meal/LoadingSpinner";
 import NutritionSummary from "@/components/manual/Meal/NutritionSummary";
 import Slide from "@/components/manual/Slide/Slide";
 import { useMealPlanner } from "@/hooks/useMealPlanner";
+import { useMealContext } from "@/components/manual/Context/MealContext";
 import { motion } from "motion/react";
 
 const Meal = (): JSX.Element => {
@@ -15,7 +16,7 @@ const Meal = (): JSX.Element => {
         isLoading,
         error,
         nutrition,
-        mealType,
+        //mealType,
         mealImage,
         imagesLoaded,
         handleGenerateMeal,
@@ -27,10 +28,12 @@ const Meal = (): JSX.Element => {
         MEALS
     } = useMealPlanner();
 
+    const { mealType } = useMealContext();
+
     return (
-        <div className="meal-page bg-yellow-500 min-h-screen">
+        <div className="meal-page bg-cyan-500 min-h-screen">
             <div className="container mx-auto px-4 py-8">
-                <MealHeader/>
+                <MealHeader />
 
                 <InputSection
                     caloriesSet={caloriesSet}
@@ -52,7 +55,7 @@ const Meal = (): JSX.Element => {
                         {imagesLoaded && <Slide
                             mealImages={mealImage}
                             mealTypes={mealType}
-                         />}
+                        />}
                     </div>
                 ) : (
                     /* Desktop Version */

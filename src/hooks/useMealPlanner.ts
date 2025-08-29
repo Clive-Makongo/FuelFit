@@ -13,12 +13,6 @@ interface NutritionalInfo {
     protein: number;
 }
 
-interface MealImage {
-    breakfast: string;
-    lunch: string;
-    dinner: string;
-}
-
 interface ApiResponse {
     meals: { title: string; sourceUrl: string }[];
     nutrients: NutritionalInfo;
@@ -41,17 +35,10 @@ export const useMealPlanner = () => {
     const [error, setError] = useState<string | null>(null);
 
     // First API call to get meals
-    const { mealType, nutrition, generateMeals } = useMealGenerate();
+    const { mealType, nutrition, mealImage, generateMeals, setMealImage } = useMealGenerate();
 
     //second API call to get meal nutrition data
     const { mealNutrition, getMealNutrients } = useMealNutrition()
-
-    //keeping images in this file
-    const [mealImage, setMealImage] = useState<MealImage>({
-        breakfast: "",
-        lunch: "",
-        dinner: "",
-    });
 
     const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
 
@@ -97,13 +84,6 @@ export const useMealPlanner = () => {
                 throw new MealGenerationError("Invalid API response format");
             }
 
-            setMealImage({
-                ...mealImage,
-                breakfast: `https://img.spoonacular.com/recipes/${response.meals[0].id}-312x231.jpg`,
-                lunch: `https://img.spoonacular.com/recipes/${response.meals[1].id}-312x231.jpg`,
-                dinner: `https://img.spoonacular.com/recipes/${response.meals[2].id}-312x231.jpg`,
-            });
-
             setImagesLoaded(true);
 
             // Nutrition
@@ -148,6 +128,7 @@ export const useMealPlanner = () => {
         nutrition,
         handleGenerateMeal,
         isFormValid,
+        setMealImage,
         MEALS,
     };
 };

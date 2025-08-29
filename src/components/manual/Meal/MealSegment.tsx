@@ -36,7 +36,7 @@ const MealSegment = ({
 
     if (isLoading) {
         return (
-            <div className="flex flex-col border-black border text-center meal-segment rounded-lg m-2 h-fit">
+            <div className="flex flex-col border-black border text-center meal-segment rounded-lg m-2 h-full">
                 <div className="w-full h-48 bg-gray-200 animate-pulse flex items-center justify-center">
                     <span className="text-gray-500">Loading...</span>
                 </div>
@@ -51,9 +51,9 @@ const MealSegment = ({
     return (
         <motion.div
             whileHover={{ scale: 1.015 }}
-            className="flex flex-col border-black border text-center meal-segment rounded-lg m-2 h-fit overflow-hidden shadow-lg"
+            className="flex flex-col justify-evenly border-black border text-center meal-segment rounded-lg m-2 h-full overflow-hidden shadow-lg"
         >
-            <div className="relative h-48 overflow-hidden">
+            <div className="flex relative overflow-hidden">
                 <img
                     className="w-full h-full object-cover"
                     src={image}
@@ -67,7 +67,7 @@ const MealSegment = ({
                 />
             </div>
 
-            <div className="flex-1 p-4">
+            <div className="grid grid-cols-1 p-4 bg-gradient-to-t from-red-500 to-blue-500">
                 <h2 className="text-lg font-bold mb-2 text-gray-800">
                     {meal.toUpperCase()}
                 </h2>

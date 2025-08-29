@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASEURL = "https://api.spoonacular.com/recipes/complexSearch";
-const APIKEY = "8054ad524f804f2ab3c5f2ab5af70590";
+const APIKEY = import.meta.env.VITE_API_KEY0;
 
 export default function search(query) {
     return axios.get(BASEURL, {
