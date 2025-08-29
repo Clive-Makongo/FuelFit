@@ -23,8 +23,6 @@ const MealContext = createContext<MealContextType | null>(null);
 
 export const MealProvider = ({ children }: { children: ReactNode }) => {
     // const { mealImage, mealType, nutrition, lastGeneratedParams, generateMeals, setLastGenereatedParams, setMealImage } = useMealGenerate();
-
-
     // Meal/nutrition state
     const [mealType, setMealType] = useState<MealType>({
         breakfast: "",
