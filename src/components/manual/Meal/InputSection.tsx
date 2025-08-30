@@ -20,15 +20,15 @@ const InputSection: React.FC<InputSectionProps> = ({
     handleGenerateMeal,
 }) => {
     return (
-        <section className="inputs flex flex-row justify-evenly w-full mb-6 gap-4 mx-auto">
+        <section className="inputs flex flex-col justify-evenly w-full mb-6 gap-4 mx-auto">
             {/* Calories Input */}
-            <div className="flex flex-col">
+            <div className="flex flex-row justify-end">
                 <label htmlFor="calories" className="text-sm font-medium mb-1">
                     Calories (1-5000)
                 </label>
                 <input
                     id="calories"
-                    className="set-calories border-2 border-black rounded-lg px-3 py-2"
+                    className="set-calories border-2 border-black rounded-lg px-3 py-2 w-full"
                     type="number"
                     min="1"
                     max="5000"
@@ -40,13 +40,13 @@ const InputSection: React.FC<InputSectionProps> = ({
             </div>
 
             {/* Diet Input */}
-            <div className="flex flex-col">
-                <label htmlFor="diet" className="text-sm font-medium mb-1">
+            <div className="flex flex-row jusify-end">
+                <label htmlFor="diet" className="text-sm font-medium mb-1 w-16">
                     Diet Type
                 </label>
                 <input
                     id="diet"
-                    className="set-diet border-2 border-black rounded-lg px-3 py-2"
+                    className="set-diet border-2 border-black rounded-lg px-3 py-2 w-full"
                     type="text"
                     placeholder="Mediterranean"
                     onChange={(e) => setDiet(e.target.value)}
