@@ -7,28 +7,50 @@ import NutritionSummary from "@/components/manual/Meal/NutritionSummary";
 import Slide from "@/components/manual/Slide/Slide";
 import { useMealPlanner } from "@/hooks/useMealPlanner";
 import { useMealContext } from "@/components/manual/Context/MealContext";
+
 import { motion } from "motion/react";
+import { useEffect } from "react";
 
 const Meal = (): JSX.Element => {
     // hooks
+    // const {
+    //     isMobile,
+    //     isLoading,
+    //     error,
+    //     nutrition,
+    //     //mealType,
+    //     mealImage,
+    //     imagesLoaded,
+    //     handleGenerateMeal,
+    //     caloriesSet,
+    //     dietSet,
+    //     setCalories,
+    //     setDiet,
+    //     isFormValid,
+    //     MEALS
+    // } = useMealPlanner();
+
     const {
-        isMobile,
-        isLoading,
-        error,
-        nutrition,
-        //mealType,
-        mealImage,
-        imagesLoaded,
-        handleGenerateMeal,
         caloriesSet,
         dietSet,
         setCalories,
         setDiet,
+        isLoading,
+        error,
+        isMobile,
+        imagesLoaded,
+        mealType,
+        mealImage,
+        nutrition,
+        handleGenerateMeal,
         isFormValid,
+        setMealImage,
         MEALS
-    } = useMealPlanner();
+    } = useMealContext();
 
-    const { mealType } = useMealContext();
+    useEffect(() => {
+        console.log(" MEALPAGE: MEAL TYPE: ", mealType)
+    }, [mealType, mealImage])
 
     return (
         <div className="meal-page bg-cyan-500 min-h-screen">
@@ -68,6 +90,7 @@ const Meal = (): JSX.Element => {
                                 image={mealImage[meal]}
                                 isLoading={isLoading}
                             />
+
                         ))}
                     </div>
                 )}

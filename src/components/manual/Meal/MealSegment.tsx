@@ -28,11 +28,11 @@ const MealSegment = ({
 
     // Use API image if provided, otherwise fallback to local images
     const displayImage = image || FALLBACK_IMAGES[meal as keyof typeof FALLBACK_IMAGES] || pic1;
-    const displayTitle = title || meal.charAt(0).toUpperCase() + meal.slice(1);
+
 
     useEffect(() => {
-        console.log("IMAGE PASSED: ", image)
-    }, [image, displayImage])
+        console.log("TITLE PASSED: ", title)
+    }, [image, displayImage, meal,])
 
     if (isLoading) {
         return (
@@ -67,19 +67,23 @@ const MealSegment = ({
                 />
             </div>
 
-            <div className="grid grid-cols-1 p-4 bg-gradient-to-t from-red-500 to-blue-500">
-                <h2 className="text-lg font-bold mb-2 text-gray-800">
+            <div className="flex flex-col h-fit justify-between p-4 bg-gradient-to-t from-cyan-500 to-blue-500">
+                <h2 className="text-xl font-bold mb-2 text-black-900">
                     {meal.toUpperCase()}
                 </h2>
 
                 {title && (
-                    <h3 className="text-sm font-medium mb-3 text-gray-600 line-clamp-2">
-                        {displayTitle}
+                    <h3 className="text-lg font-medium mb-3 text-black-600 line-clamp-2">
+                        {title}
                     </h3>
                 )}
 
                 <div className="bg-blue-500 text-white p-2 rounded text-sm font-medium">
-                    {title ? 'Generated Meal' : 'Click Generate to see meal'}
+                    {title && 'Click Generate to Recipe'}
+                </div>
+
+                <div className="bg-blue-500 text-white p-2 rounded text-sm font-medium">
+                    {title && 'Click Generate to Nutrition'}
                 </div>
             </div>
         </motion.div>

@@ -25,7 +25,7 @@ class MealGenerationError extends Error {
     }
 }
 
-export const useMealPlanner = () => {
+const useMealPlanner = () => {
     // Input state
     const [caloriesSet, setCalories] = useState<string>("");
     const [dietSet, setDiet] = useState<string>("");
@@ -132,3 +132,5 @@ export const useMealPlanner = () => {
         MEALS,
     };
 };
+
+export default useMealPlanner;
