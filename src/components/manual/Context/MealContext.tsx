@@ -1,98 +1,162 @@
-import { useState, useCallback, useContext, createContext, ReactNode } from "react";
-import { MealType } from "@/hooks/useMealGenerate";
-import { NutritionalInfo } from "@/hooks/useMealGenerate";
-import { MealImage } from "@/hooks/useMealGenerate";
-import caloriesAPI from "@/utils/coloriesAPI"
-import { ApiResponse } from "@/hooks/useMealGenerate";
-import { useMealGenerate } from "@/hooks/useMealGenerate";
+import { useState, useCallback, useEffect, createContext, useContext, ReactNode } from "react";
+import { useWindowSize } from "@/utils/useWindowSize";
+import { useMealGenerate, MealImage, MealType, ApiResponse, NutritionalInfo } from "@/hooks/useMealGenerate";
+import { useMealNutrition } from "@/hooks/useMealNutrition";
 
-interface MealContextType {
-    mealImage: MealImage;
-    mealType: MealType;
-    nutrition: NutritionalInfo;
-    isLoading?: boolean;
-    error?: string | null;
-    lastGeneratedParams: { calories: number; diet: string } | null;
-    generateMeals: (calories: number, diet: string) => Promise<ApiResponse | null>;
-    clearMeals?: () => void;
-    setMealType: (meals: MealType) => void;
-    setNutrition: (nutrition: NutritionalInfo) => void;
+const MEALS = ["breakfast", "lunch", "dinner"] as const;
+const MOBILE_BREAKPOINT = 768;
+
+interface NutritionalInfo {
+    calories: number;
+    carbohydrates: number;
+    fat: number;
+    protein: number;
 };
 
-const MealContext = createContext<MealContextType | null>(null);
+interface ApiResponse {
+    meals: { title: string; sourceUrl: string }[];
+    nutrients: NutritionalInfo;
+};
+
+class MealGenerationError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "MealGenerationError";
+    }
+};
+
+interface MealContextType {
+    isMobile: boolean,
+    isLoading: boolean,
+    error: string | null,
+    nutrition: NutritionalInfo,
+    mealType: MealType,
+    mealImage: MealImage,
+    imagesLoaded: boolean,
+    handleGenerateMeal: () => void,
+    caloriesSet: number,
+    dietSet: string,
+    setCalories: () => void,
+    setDiet: () => void,
+    isFormValid: () => void,
+    MEALS: string[];
+};
+
+const newMealContext = createContext<MealContextType | null>(null);
 
 export const MealProvider = ({ children }: { children: ReactNode }) => {
-    // const { mealImage, mealType, nutrition, lastGeneratedParams, generateMeals, setLastGenereatedParams, setMealImage } = useMealGenerate();
+    // Input state
+    const [caloriesSet, setCalories] = useState<number>();
+    const [dietSet, setDiet] = useState<string>("");
+
+    // Status state
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // First API call to get meals
+    const { mealType, nutrition, mealImage, generateMeals, setMealImage } = useMealGenerate();
+
+    //second API call to get meal nutrition data
+    const { mealNutrition, getMealNutrients } = useMealNutrition()
+
+    const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
+
+    // Device size
+    const { width } = useWindowSize();
+    const isMobile: boolean = width < MOBILE_BREAKPOINT;
+
+    // --- Validation ---
+    const isFormValid = useCallback(() => {
+        const calories = Number(caloriesSet);
+        return calories > 0 && calories <= 5000 && dietSet.trim().length > 0;
+    }, [caloriesSet, dietSet]);
+
+    // --- Helpers ---
+    const validateApiResponse = (response: any): response is ApiResponse => {
+        return (
+            response &&
+            Array.isArray(response.meals) &&
+            response.meals.length >= 3 &&
+            response.meals.every((meal: any) => meal.title) &&
+            response.nutrients &&
+            typeof response.nutrients.calories === "number"
+        );
+    };
 
 
-    // Meal/nutrition state
-    const [mealType, setMealType] = useState<MealType>({
-        breakfast: "",
-        lunch: "",
-        dinner: "",
-    });
-    const [nutrition, setNutrition] = useState<NutritionalInfo>({
-        calories: 0,
-        carbohydrates: 0,
-        fat: 0,
-        protein: 0,
-    });
+    // --- Actions ---
+    const handleGenerateMeal = useCallback(async () => {
+        if (!isFormValid()) {
+            setError("Please enter valid calories (1-5000) and diet type");
+            return;
+        }
 
-    const [mealImage, setMealImage] = useState<MealImage>({
-        breakfast: "",
-        lunch: "",
-        dinner: "",
-    });
+        try {
+            setIsLoading(true);
+            setError(null);
 
-    const [lastGeneratedParams, setLastGenereatedParams] = useState<{ calories: number, diet: string } | null>(null);
+            const response = await generateMeals(Number(caloriesSet), dietSet.trim());
 
-    const generateMeals = useCallback(
-        async (calories: number, diet: string): Promise<ApiResponse | null> => {
-            try {
-                const response = await caloriesAPI(calories, diet);
-                localStorage.setItem("first response", JSON.stringify(response));
-                const stored = JSON.parse(localStorage.getItem("first response"))
-                console.log(response, stored, " RESPONSE")
-                setMealType({
-                    breakfast: response.meals[0].title,
-                    lunch: response.meals[1].title,
-                    dinner: response.meals[2].title,
-                });
+            console.log("RESPONSE :", response);
 
-                setNutrition({
-                    calories: response.nutrients.calories,
-                    carbohydrates: response.nutrients.carbohydrates,
-                    protein: response.nutrients.protein,
-                    fat: response.nutrients.fat,
-                });
-
-                setMealImage({
-                    ...mealImage,
-                    breakfast: `https://img.spoonacular.com/recipes/${response.meals[0].id}-312x231.jpg`,
-                    lunch: `https://img.spoonacular.com/recipes/${response.meals[1].id}-312x231.jpg`,
-                    dinner: `https://img.spoonacular.com/recipes/${response.meals[2].id}-312x231.jpg`,
-                });
-
-                setLastGenereatedParams({ calories, diet });
-
-                return response;
-            } catch (error) {
-                console.error("Error generating meals:", error);
-                throw error;
+            if (!validateApiResponse(response)) {
+                throw new MealGenerationError("Invalid API response format");
             }
-        },
-        []);
 
+            setImagesLoaded(true);
+
+            // Nutrition
+            getMealNutrients(
+                response.meals[0].title,
+                response.meals[1].title,
+                response.meals[2].title,
+            );
+
+        } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : "Failed to generate meal plan";
+
+            console.error("Error fetching meal data:", error);
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [caloriesSet, dietSet, isFormValid, getMealNutrients]);
+
+    useEffect(() => {
+        console.log("Updated mealType:", mealType);
+        console.log("Updated nutrition:", nutrition);
+        console.log("Updated images:", mealImage);
+        console.log("GET MEAL NUTRIENTS: ", mealNutrition);
+    }, [mealType, nutrition, mealImage]);
+
+    const value = {
+        caloriesSet,
+        dietSet,
+        setCalories,
+        setDiet,
+        isLoading,
+        error,
+        isMobile,
+        imagesLoaded,
+        mealType,
+        mealImage,
+        nutrition,
+        handleGenerateMeal,
+        isFormValid,
+        setMealImage,
+        MEALS
+    };
 
     return (
-        <MealContext.Provider value={{ mealImage, mealType, nutrition, lastGeneratedParams, generateMeals, setLastGenereatedParams, setMealImage }}>
+        <newMealContext.Provider value={value}>
             {children}
-        </MealContext.Provider>
+        </newMealContext.Provider>
     )
 };
 
 export const useMealContext = () => {
-    const ctx = useContext(MealContext);
+    const ctx = useContext(newMealContext);
     if (!ctx) {
         throw new Error(`useMealContext must be used within a PageProvider`)
     }
