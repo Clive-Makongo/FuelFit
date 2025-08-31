@@ -41,6 +41,7 @@ const Meal = (): JSX.Element => {
         imagesLoaded,
         mealType,
         mealImage,
+        mealNutrition,
         nutrition,
         handleGenerateMeal,
         isFormValid,
@@ -54,18 +55,20 @@ const Meal = (): JSX.Element => {
 
     return (
         <div className="meal-page bg-cyan-500 min-h-screen">
-            <div className="container mx-auto px-4 py-8">
-                <MealHeader />
+            <div className="container mx-auto">
+                <div className="flex flex-col p-4">
+                    <MealHeader />
 
-                <InputSection
-                    caloriesSet={caloriesSet}
-                    dietSet={dietSet}
-                    setCalories={setCalories}
-                    setDiet={setDiet}
-                    isFormValid={isFormValid}
-                    isLoading={isLoading}
-                    handleGenerateMeal={handleGenerateMeal}
-                />
+                    <InputSection
+                        caloriesSet={caloriesSet}
+                        dietSet={dietSet}
+                        setCalories={setCalories}
+                        setDiet={setDiet}
+                        isFormValid={isFormValid}
+                        isLoading={isLoading}
+                        handleGenerateMeal={handleGenerateMeal}
+                    />
+                </div>
 
                 {error && <ErrorDisplay error={error} />}
 
