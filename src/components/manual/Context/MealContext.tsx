@@ -20,6 +20,7 @@ interface MealContextType {
     nutrition: NutritionalInfo,
     mealType: MealType,
     mealImage: MealImage,
+    setMealImage: () => void,
     mealNutrition: []
     imagesLoaded: boolean,
     handleGenerateMeal: () => void,
