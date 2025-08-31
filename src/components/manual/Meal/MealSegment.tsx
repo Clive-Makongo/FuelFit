@@ -51,9 +51,9 @@ const MealSegment = ({
     return (
         <motion.div
             whileHover={{ scale: 1.015 }}
-            className="flex flex-col justify-evenly border-black border text-center meal-segment rounded-lg m-2 h-full overflow-hidden shadow-lg"
+            className="flex flex-col justify-evenly  text-center meal-segment rounded-lg m-2 h-full overflow-hidden shadow-lg"
         >
-            <div className="flex relative overflow-hidden">
+            <div className="flex relative overflow-hidden rounded-3xl ">
                 <img
                     className="w-full h-full object-cover"
                     src={image}
@@ -67,7 +67,7 @@ const MealSegment = ({
                 />
             </div>
 
-            <div className="flex flex-col h-fit justify-between p-4 bg-gradient-to-t from-cyan-500 to-blue-500">
+            <div className="flex flex-col justify-between text-left p-4 ">
                 <h2 className="text-xl font-bold mb-2 text-black-900">
                     {meal.toUpperCase()}
                 </h2>

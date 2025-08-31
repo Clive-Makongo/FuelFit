@@ -6,18 +6,6 @@ import { useMealNutrition } from "@/hooks/useMealNutrition";
 const MEALS = ["breakfast", "lunch", "dinner"] as const;
 const MOBILE_BREAKPOINT = 768;
 
-interface NutritionalInfo {
-    calories: number;
-    carbohydrates: number;
-    fat: number;
-    protein: number;
-};
-
-interface ApiResponse {
-    meals: { title: string; sourceUrl: string }[];
-    nutrients: NutritionalInfo;
-};
-
 class MealGenerationError extends Error {
     constructor(message: string) {
         super(message);
@@ -32,13 +20,15 @@ interface MealContextType {
     nutrition: NutritionalInfo,
     mealType: MealType,
     mealImage: MealImage,
+    setMealImage: () => void,
+    mealNutrition: []
     imagesLoaded: boolean,
     handleGenerateMeal: () => void,
     caloriesSet: number,
     dietSet: string,
     setCalories: () => void,
     setDiet: () => void,
-    isFormValid: () => void,
+    isFormValid: () => boolean,
     MEALS: string[];
 };
 
@@ -46,7 +36,7 @@ const newMealContext = createContext<MealContextType | null>(null);
 
 export const MealProvider = ({ children }: { children: ReactNode }) => {
     // Input state
-    const [caloriesSet, setCalories] = useState<number>();
+    const [caloriesSet, setCalories] = useState<number | string>('');
     const [dietSet, setDiet] = useState<string>("");
 
     // Status state
@@ -124,9 +114,9 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
     }, [caloriesSet, dietSet, isFormValid, getMealNutrients]);
 
     useEffect(() => {
-        console.log("Updated mealType:", mealType);
-        console.log("Updated nutrition:", nutrition);
-        console.log("Updated images:", mealImage);
+        //console.log("Updated mealType:", mealType);
+        //console.log("Updated nutrition:", nutrition);
+        //console.log("Updated images:", mealImage);
         console.log("GET MEAL NUTRIENTS: ", mealNutrition);
     }, [mealType, nutrition, mealImage]);
 
@@ -141,6 +131,7 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
         imagesLoaded,
         mealType,
         mealImage,
+        mealNutrition,
         nutrition,
         handleGenerateMeal,
         isFormValid,
