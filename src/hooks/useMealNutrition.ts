@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import nutritionAPI from "@/utils/nutritionAPI";
 
 interface MealNutrition {
@@ -82,7 +82,7 @@ export const useMealNutrition = () => {
                 const breakfast = await retryAPI(b).catch(() => ({
                     data: { results: [{ image: "" }] },
                 }));
-                await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay
+                await new Promise((resolve) => setTimeout(resolve, 100));
 
                 const lunch = await retryAPI(l).catch(() => ({
                     data: { results: [{ image: "" }] },
@@ -93,11 +93,9 @@ export const useMealNutrition = () => {
                     data: { results: [{ image: "" }] },
                 }));
 
-                console.log("DINNER :", breakfast, lunch, dinner);
-
                 setMealNutrition({
-                    breakfast: [breakfast.data.results[0]?.nutrition],
-                    lunch: [lunch.data.results[0]?.nutrition],
+                    breakfast: [breakfast.data.results[0]?.nutrition.nutrients],
+                    lunch: [lunch.data.results[0]?.nutrition.nutrients],
                     dinner: [dinner.data.results[0]?.nutrition.nutrients],
                 });
             } catch (error) {
@@ -106,6 +104,10 @@ export const useMealNutrition = () => {
         },
         []
     );
+
+    useEffect(() => {
+        console.log("NUTRRRRR: ", mealNutrition)
+    }, [mealNutrition])
 
     const resetNutrition = useCallback(() => {
         setMealNutrition({
