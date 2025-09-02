@@ -2,9 +2,9 @@ import { useState, useCallback, useEffect } from "react";
 import nutritionAPI from "@/utils/nutritionAPI";
 
 interface MealNutrition {
-    breakfast: any[];
-    lunch: any[];
-    dinner: any[];
+    breakfast: string[][] | number[][];
+    lunch: string[][] | number[][];
+    dinner: string[][] | number[][];
 }
 
 export const useMealNutrition = () => {
@@ -60,6 +60,22 @@ export const useMealNutrition = () => {
         }
     };
 
+    // slice out relevant nutrition
+    const getRelNutr = (meal: {}): string[][] | number[][] => {
+        const x = Object.entries(meal.data.results[0]?.nutrition.nutrients).slice(0, 6);
+
+        const y = x.map((value) => {
+            const name = value[1].name;
+            const amount = value[1].amount;
+            const unit = value[1].unit;
+            console.log("2222: ", name, amount, unit)
+
+            return [name, amount, unit];
+        });
+
+        return y;
+    }
+
     const getMealNutrients = useCallback(
         async (b: string, l: string, d: string): Promise<void> => {
             if (!b || !l || !d) {
@@ -84,6 +100,28 @@ export const useMealNutrition = () => {
                 }));
                 await new Promise((resolve) => setTimeout(resolve, 100));
 
+                const bNutr = getRelNutr(breakfast);
+                console.log("NEWW : ", bNutr)
+
+                // const bArr = Object.entries(breakfast.data.results[0]?.nutrition.nutrients)
+
+                // const gBreakfast: [] = bArr.slice(0, 6)
+
+                // gBreakfast.forEach((value, index) => {
+                //     value[1].amount, value[1].name, value[1].unit,
+                // })
+
+                // const test = gBreakfast.map((value, index) => {
+                //     const name = value[1].name;
+                //     const amount = value[1].amount;
+                //     const unit = value[1].unit;
+                //     console.log("2222: ", name, amount, unit)
+
+                //     return [name, amount, unit];
+                // });
+
+
+
                 const lunch = await retryAPI(l).catch(() => ({
                     data: { results: [{ image: "" }] },
                 }));
@@ -94,9 +132,9 @@ export const useMealNutrition = () => {
                 }));
 
                 setMealNutrition({
-                    breakfast: [breakfast.data.results[0]?.nutrition.nutrients],
-                    lunch: [lunch.data.results[0]?.nutrition.nutrients],
-                    dinner: [dinner.data.results[0]?.nutrition.nutrients],
+                    breakfast: getRelNutr(breakfast),
+                    lunch: getRelNutr(lunch),
+                    dinner: getRelNutr(dinner),
                 });
             } catch (error) {
                 console.error("Error fetching meal images:", error);

@@ -7,6 +7,7 @@ import NutritionSummary from "@/components/manual/Meal/NutritionSummary";
 import Slide from "@/components/manual/Slide/Slide";
 import { useMealPlanner } from "@/hooks/useMealPlanner";
 import { useMealContext } from "@/components/manual/Context/MealContext";
+import Chart from "@/components/manual/Chart/Chart";
 
 import { motion } from "motion/react";
 import { useEffect } from "react";
@@ -50,11 +51,11 @@ const Meal = (): JSX.Element => {
     } = useMealContext();
 
     useEffect(() => {
-        console.log(" MEALPAGE: MEAL TYPE: ", mealType)
-    }, [mealType, mealImage])
+        console.log(" MEALPAGE: MEAL TYPE: ", mealNutrition)
+    }, [mealType, mealImage, mealNutrition])
 
     return (
-        <div className="meal-page bg-cyan-500 min-h-screen">
+        <div className="meal-page bg-white min-h-screen">
             <div className="container mx-auto">
                 <div className="flex flex-col p-4">
                     <MealHeader />
@@ -68,6 +69,9 @@ const Meal = (): JSX.Element => {
                         isLoading={isLoading}
                         handleGenerateMeal={handleGenerateMeal}
                     />
+                    <div className="w-1/3">
+                        <Chart label={['one', `two`]} value={[5, 5]} />
+                    </div>
                 </div>
 
                 {error && <ErrorDisplay error={error} />}
