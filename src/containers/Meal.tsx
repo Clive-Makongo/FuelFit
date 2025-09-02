@@ -8,29 +8,13 @@ import Slide from "@/components/manual/Slide/Slide";
 import { useMealPlanner } from "@/hooks/useMealPlanner";
 import { useMealContext } from "@/components/manual/Context/MealContext";
 import Chart from "@/components/manual/Chart/Chart";
+import Modal from "react-responsive-modal"
+import 'react-responsive-modal/styles.css';
 
 import { motion } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Meal = (): JSX.Element => {
-    // hooks
-    // const {
-    //     isMobile,
-    //     isLoading,
-    //     error,
-    //     nutrition,
-    //     //mealType,
-    //     mealImage,
-    //     imagesLoaded,
-    //     handleGenerateMeal,
-    //     caloriesSet,
-    //     dietSet,
-    //     setCalories,
-    //     setDiet,
-    //     isFormValid,
-    //     MEALS
-    // } = useMealPlanner();
-
     const {
         caloriesSet,
         dietSet,
@@ -49,6 +33,8 @@ const Meal = (): JSX.Element => {
         setMealImage,
         MEALS
     } = useMealContext();
+
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         console.log(" MEALPAGE: MEAL TYPE: ", mealNutrition)
@@ -69,9 +55,6 @@ const Meal = (): JSX.Element => {
                         isLoading={isLoading}
                         handleGenerateMeal={handleGenerateMeal}
                     />
-                    <div className="w-1/3">
-                        <Chart label={['one', `two`]} value={[5, 5]} />
-                    </div>
                 </div>
 
                 {error && <ErrorDisplay error={error} />}
@@ -103,9 +86,28 @@ const Meal = (): JSX.Element => {
                 )}
 
                 {/* Nutrition Summary */}
-                {nutrition.calories > 0 && <NutritionSummary
-                    nutrition={nutrition}
-                />}
+                {nutrition.calories > 0 &&
+                    <>
+                        <button className="h-12 bg-blue-500"
+                            onClick={() => setOpen(true)}
+                        >
+                            See Nurtition for the Day
+                        </button>
+
+
+                        <Modal
+                            classNames={{
+                                overlay: "bg-black/50 fixed inset-0 flex items-center justify-center",
+                                modal: "bg-white rounded-2xl shadow-xl p-6 w-96 max-w-full text-center",
+                            }}
+                            open={open}
+                            onClose={() => setOpen(false)}
+                            center
+                        >
+                            <Chart value={[`${nutrition.carbohydrates}`, `${nutrition.fat}`, `${nutrition.protein}`]} label={[`Carbohydrates`, `Fat`, `Protein`]} />
+                        </Modal>
+                    </>
+                }
             </div>
         </div>
     );

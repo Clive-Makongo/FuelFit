@@ -2,6 +2,7 @@ import React from "react";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
+  Colors,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -16,6 +17,7 @@ import exp from "constants";
 
 ChartJS.register(
   CategoryScale,
+  Colors,
   LinearScale,
   PointElement,
   LineElement,
@@ -28,7 +30,7 @@ ChartJS.register(
 
 type ChartProps = {
   label: string[];
-  value: number[];
+  value: string[];
 };
 
 const Chart = ({ label, value }: ChartProps): JSX.Element => {
@@ -37,10 +39,7 @@ const Chart = ({ label, value }: ChartProps): JSX.Element => {
     labels: label,
     datasets: [
       {
-        label: ``,
-        backgroundColour: "rgba(75, 192, 192, 1)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
+        label: label,
         data: value
 
       }
