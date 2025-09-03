@@ -1,15 +1,11 @@
 import axios from "axios";
 
-const BASEURL = "https://api.spoonacular.com/recipes/complexSearch";
-const APIKEY = import.meta.env.VITE_API_KEY1;
+const APIKEY = import.meta.env.VITE_API_KEY3;
 
-export default function search(query) {
+export default function search(id: number | string | null) {
+    const BASEURL = `https://api.spoonacular.com/recipes/${id}/nutritionWidget.json`;
     return axios.get(BASEURL, {
         params: {
-            number: 1,
-            query: query,
-            addRecipeNutrition: true,
-            instructionsRequired: true,
             apiKey: APIKEY
         }
     }).then(response => {

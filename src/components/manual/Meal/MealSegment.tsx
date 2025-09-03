@@ -1,8 +1,10 @@
 import { motion } from 'motion/react';
-import { useEffect } from 'react';
-import pic1 from '../../../assets/bg-image.jpg';
-import pic2 from '../../../assets/construction.jpeg';
-import pic3 from '../../../assets/light.avif';
+import { useEffect, useState } from 'react';
+import pic1 from '@/assets/bg-image.jpg';
+import pic2 from '@/assets/construction.jpeg';
+import pic3 from '@/assets/light.avif';
+import Modal from 'react-responsive-modal';
+import Chart from '@/components/manual/Chart/Chart';
 
 // Fallback images map
 const FALLBACK_IMAGES = {
@@ -17,22 +19,57 @@ interface MealSegmentProps {
     image?: string;  // Optional - will use fallback if not provided
     title?: string;  // Optional - will use meal name if not provided
     isLoading?: boolean;
+    mealNutrition: string[][] | number[][]
+}
+
+interface ChartProps {
+    calories: string[] | number[];
+    value: number[];
+    label: string[]
 }
 
 const MealSegment = ({
     meal,
     image,
     title,
-    isLoading = false
+    isLoading = false,
+    mealNutrition
 }: MealSegmentProps): JSX.Element => {
 
     // Use API image if provided, otherwise fallback to local images
     const displayImage = image || FALLBACK_IMAGES[meal as keyof typeof FALLBACK_IMAGES] || pic1;
 
+    const [open, setOpen] = useState<boolean>(false);
+    const [chartProps, setChartProps] = useState<ChartProps>({ value: [], label: [], calories: [] })
+
 
     useEffect(() => {
-        console.log("TITLE PASSED: ", title)
-    }, [image, displayImage, meal,])
+        console.log("MEAL SEGMENT PROPS: ", mealNutrition)
+        if (mealNutrition.data) {
+            console.log("CHART DATA : ", mealNutrition.data)
+            const arr = Object.entries(mealNutrition.data.nutrients)
+            const filtered = arr.filter(value => value[1].unit === `g`);
+            console.log("ARRRR: ", filtered);
+            const value: number[] = []
+            const label: string[] = []
+
+            for (let index = 0; index < filtered.length; index++) {
+                value.push(filtered[index][1].amount);
+                label.push(filtered[index][1].name)
+            }
+
+            setChartProps({
+                calories: mealNutrition.data.nutrients[0].amount,
+                value: value,
+                label: label
+            })
+
+
+            console.log("INTPUSS: ", chartProps, value, label)
+        }
+
+        console.log("CHART PROPS: ", chartProps)
+    }, [image, displayImage, meal, mealNutrition, open])
 
     if (isLoading) {
         return (
@@ -82,9 +119,24 @@ const MealSegment = ({
                     {title && 'Click Generate to Recipe'}
                 </div>
 
-                <div className="bg-blue-500 text-white p-2 rounded text-sm font-medium">
+                <button
+                    onClick={() => setOpen(true)}
+                    className="bg-blue-500 text-white p-2 rounded text-sm font-medium">
                     {title && 'Click Generate to Nutrition'}
-                </div>
+                </button>
+
+                {<Modal
+                    classNames={{
+                        overlay: "bg-black/50 fixed inset-0 flex items-center justify-center",
+                        modal: "bg-white rounded-2xl shadow-xl p-6 w-96 max-w-full text-center",
+                    }}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    center
+                >
+                    <h1>{title} Calories {chartProps.calories}</h1>
+                    <Chart value={chartProps.value} label={chartProps.label} />
+                </Modal>}
             </div>
         </motion.div>
     );

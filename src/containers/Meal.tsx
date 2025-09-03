@@ -30,7 +30,6 @@ const Meal = (): JSX.Element => {
         nutrition,
         handleGenerateMeal,
         isFormValid,
-        setMealImage,
         MEALS
     } = useMealContext();
 
@@ -57,6 +56,22 @@ const Meal = (): JSX.Element => {
                     />
                 </div>
 
+                {nutrition.calories > 0 &&
+                    <div
+                        className="flex flex-row text-lg font-mono"
+                    >
+                        <button className="h-12 bg-blue-500 justify-between"
+                            onClick={() => setOpen(true)}
+                        >
+                            See Nurtition for the Day
+                        </button>
+
+                        <h1>
+                            Total Calories {nutrition.calories}
+                        </h1>
+                    </div>
+                }
+
                 {error && <ErrorDisplay error={error} />}
 
                 {isLoading && <LoadingSpinner />}
@@ -79,6 +94,7 @@ const Meal = (): JSX.Element => {
                                 title={mealType[meal]}
                                 image={mealImage[meal]}
                                 isLoading={isLoading}
+                                mealNutrition={mealNutrition[meal]}
                             />
 
                         ))}
@@ -88,13 +104,6 @@ const Meal = (): JSX.Element => {
                 {/* Nutrition Summary */}
                 {nutrition.calories > 0 &&
                     <>
-                        <button className="h-12 bg-blue-500"
-                            onClick={() => setOpen(true)}
-                        >
-                            See Nurtition for the Day
-                        </button>
-
-
                         <Modal
                             classNames={{
                                 overlay: "bg-black/50 fixed inset-0 flex items-center justify-center",

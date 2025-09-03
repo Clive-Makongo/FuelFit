@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASEURL = "https://api.spoonacular.com/mealplanner/generate";
-const APIKEY = import.meta.env.VITE_API_KEY1;
+const APIKEY = import.meta.env.VITE_API_KEY2;
 
 export default function search(targetCalories: number | string, diet: string) {
     // Make a request to the Spoonacular API to get meals for the day

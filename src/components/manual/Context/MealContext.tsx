@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, createContext, useContext, ReactNode 
 import { useWindowSize } from "@/utils/useWindowSize";
 import { useMealGenerate, MealImage, MealType, ApiResponse, NutritionalInfo } from "@/hooks/useMealGenerate";
 import { useMealNutrition } from "@/hooks/useMealNutrition";
+import { MealID } from "@/hooks/useMealGenerate";
 
 const MEALS = ["breakfast", "lunch", "dinner"] as const;
 const MOBILE_BREAKPOINT = 768;
@@ -18,6 +19,7 @@ interface MealContextType {
     isLoading: boolean,
     error: string | null,
     nutrition: NutritionalInfo,
+    mealId: MealID,
     mealType: MealType,
     mealImage: MealImage,
     setMealImage: () => void,
@@ -44,7 +46,11 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
     const [error, setError] = useState<string | null>(null);
 
     // First API call to get meals
-    const { mealType, nutrition, mealImage, generateMeals, setMealImage } = useMealGenerate();
+    const { mealType, nutrition, mealImage, mealId, generateMeals, setMealImage } = useMealGenerate();
+
+    useEffect(() => {
+        console.log("USEEEE MEAL ID: ", mealId)
+    }, [mealId])
 
     //second API call to get meal nutrition data
     const { mealNutrition, getMealNutrients } = useMealNutrition()
@@ -96,11 +102,7 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
             setImagesLoaded(true);
 
             // Nutrition
-            getMealNutrients(
-                response.meals[0].title,
-                response.meals[1].title,
-                response.meals[2].title,
-            );
+            getMealNutrients(mealId);
 
         } catch (error) {
             const errorMessage =
@@ -129,6 +131,7 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
         error,
         isMobile,
         imagesLoaded,
+        mealId,
         mealType,
         mealImage,
         mealNutrition,

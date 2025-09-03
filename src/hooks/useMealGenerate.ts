@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import caloriesAPI from "@/utils/coloriesAPI";
 
 // Types
@@ -19,6 +19,12 @@ export interface MealImage {
     breakfast: string;
     lunch: string;
     dinner: string;
+}
+
+export interface MealID {
+    breakfast: number | null;
+    lunch: number | null;
+    dinner: number | null;
 }
 
 export interface ApiResponse {
@@ -47,7 +53,9 @@ export const useMealGenerate = () => {
         dinner: "",
     });
 
-    const [lastGeneratedParams, setLastGenereatedParams] = useState<{ calories: number, diet: string } | null>(null);
+    const [lastGeneratedParams, setLastGenereatedParams] = useState<{ calories: number, diet: string } | null>(null)
+
+    const [mealId, setMealId] = useState<MealID>({ breakfast: null, lunch: null, dinner: null })
 
     const generateMeals = useCallback(
         async (calories: number, diet: string): Promise<ApiResponse | null> => {
@@ -76,6 +84,12 @@ export const useMealGenerate = () => {
                     dinner: `https://img.spoonacular.com/recipes/${response.meals[2].id}-312x231.jpg`,
                 });
 
+                setMealId({
+                    breakfast: response.meals[0].id,
+                    lunch: response.meals[1].id,
+                    dinner: response.meals[2].id
+                })
+
                 setLastGenereatedParams({ calories, diet });
 
                 return response;
@@ -86,11 +100,16 @@ export const useMealGenerate = () => {
         },
         []);
 
+    useEffect(() => {
+        console.log("Meal ID: ", mealId)
+    }, [mealId])
+
     return {
         mealType,
         nutrition,
         lastGeneratedParams,
         mealImage,
+        mealId,
         setLastGenereatedParams,
         generateMeals,
         setMealImage

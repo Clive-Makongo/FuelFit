@@ -34,12 +34,13 @@ type ChartProps = {
 };
 
 const Chart = ({ label, value }: ChartProps): JSX.Element => {
+  console.log("CHART: ", value, label);
   const data =
   {
     labels: label,
     datasets: [
       {
-        label: label,
+        label: `Grams`,
         data: value
 
       }
