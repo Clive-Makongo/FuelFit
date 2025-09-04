@@ -32,6 +32,11 @@ interface MealContextType {
     setDiet: () => void,
     isFormValid: () => boolean,
     MEALS: string[];
+    chartProps: {
+        calories: string | number;
+        value: number[];
+        label: string[];
+    }
 };
 
 const newMealContext = createContext<MealContextType | null>(null);
@@ -53,7 +58,7 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
     }, [mealId])
 
     //second API call to get meal nutrition data
-    const { mealNutrition, getMealNutrients } = useMealNutrition()
+    const { mealNutrition, chartProps, getMealNutrients } = useMealNutrition()
 
     const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
 
@@ -102,8 +107,6 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
             setImagesLoaded(true);
 
             // Nutrition
-            getMealNutrients(mealId);
-
         } catch (error) {
             const errorMessage =
                 error instanceof Error ? error.message : "Failed to generate meal plan";
@@ -114,6 +117,12 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
             setIsLoading(false);
         }
     }, [caloriesSet, dietSet, isFormValid, getMealNutrients]);
+
+    useEffect(() => {
+        if (mealId.breakfast && mealId.lunch && mealId.dinner) {
+            getMealNutrients(mealId);
+        }
+    }, [mealId, getMealNutrients]);
 
     useEffect(() => {
         //console.log("Updated mealType:", mealType);
@@ -139,7 +148,8 @@ export const MealProvider = ({ children }: { children: ReactNode }) => {
         handleGenerateMeal,
         isFormValid,
         setMealImage,
-        MEALS
+        MEALS,
+        chartProps
     };
 
     return (

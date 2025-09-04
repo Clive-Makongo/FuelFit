@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import nutritionAPI from "@/utils/nutritionAPI";
 import { useMealGenerate } from "@/hooks/useMealGenerate";
 import { MealID } from "@/hooks/useMealGenerate";
@@ -10,135 +10,79 @@ interface MealNutrition {
     dinner: string[] | number[];
 }
 
+interface ChartProps {
+    calories: string | number;
+    value: number[];
+    label: string[];
+}
+
+interface PassedProps {
+    breakfast: ChartProps;
+    lunch: ChartProps;
+    dinner: ChartProps;
+}
+
 export const useMealNutrition = () => {
     const [mealNutrition, setMealNutrition] = useState<MealNutrition>({
         breakfast: [],
         lunch: [],
         dinner: []
     });
+    const [chartProps, setChartProps] = useState<PassedProps>({ breakfast: { calories: 0, value: [], label: [] }, lunch: { calories: 0, value: [], label: [] }, dinner: { calories: 0, value: [], label: [] } });
 
-    //Get Meal Nutrients
-    // const retryAPI = async (
-    //     query: string,
-    //     maxRetries: number = 2,
-    //     delay: number = 200,
-    // ): Promise<any> => {
-    //     let attempt = 0;
+    const extractNutrients = (mealData: any) => {
+        const nutrients = Object.entries(mealData.data.nutrients);
+        const filtered = nutrients.filter(([key, nutrient]: [string, any]) =>
+            nutrient.unit === 'g' && nutrient.name !== "Net Carbohydrates"
+        );
 
-    //     while (attempt <= maxRetries) {
-    //         try {
-    //             const response = await nutritionAPI(mealId);
-
-    //             // Check if we got actual results
-    //             if (
-    //                 response?.data?.results?.length > 0 &&
-    //                 response.data.results[0]?.image
-    //             ) {
-    //                 console.log(`✅ ${query} succeeded on attempt ${attempt + 1}`);
-    //                 return response;
-    //             }
-
-    //             // If empty results and we have retries left
-    //             if (attempt < maxRetries) {
-    //                 console.log(
-    //                     `⚠️ ${query} returned empty, retrying... (attempt ${attempt + 1}/${maxRetries + 1})`,
-    //                 );
-    //                 await new Promise((resolve) => setTimeout(resolve, delay));
-    //                 attempt++;
-    //             } else {
-    //                 console.log(`❌ ${query} failed after ${maxRetries + 1} attempts`);
-    //                 return { data: { results: [{ image: "" }] } };
-    //             }
-    //         } catch (error) {
-    //             console.error(
-    //                 `❌ ${query} API error on attempt ${attempt + 1}:`,
-    //                 error,
-    //             );
-    //             if (attempt === maxRetries) {
-    //                 return { data: { results: [{ image: "" }] } };
-    //             }
-    //             await new Promise((resolve) => setTimeout(resolve, delay));
-    //             attempt++;
-    //         }
-    //     }
-    // };
-
-    // slice out relevant nutrition
-    // const getRelNutr = (meal: {}): string[][] | number[][] => {
-    //     const x = Object.entries(meal.data.results[0]?.nutrition.nutrients).slice(0, 6);
-
-    //     const y = x.map((value) => {
-    //         const name = value[1].name;
-    //         const amount = value[1].amount;
-    //         const unit = value[1].unit;
-    //         console.log("2222: ", name, amount, unit)
-
-    //         return [name, amount, unit];
-    //     });
-
-    //     return y;
-    // }
-
-    // const getMealNutrients = useCallback(
-    //     async (b: string, l: string, d: string): Promise<void> => {
-    //         if (!b || !l || !d) {
-    //             return;
-    //         }
-
-    //         try {
-    //             // const imagePromises = [
-    //             //     imageAPI(b).catch(() => ({ data: { results: [{ image: "" }] } })),
-    //             //     imageAPI(l).catch(() => ({ data: { results: [{ image: "" }] } })),
-    //             //     imageAPI(d).catch(() => ({ data: { results: [{ image: "" }] } })),
-    //             // ];
-
-    //             // console.log("IMAGE PROMISES: ", imagePromises)
-
-    //             // const [breakfastRes, lunchRes, dinnerRes] = await Promise.all(
-    //             //     imagePromises
-    //             // );
-
-    //             const breakfast = await nutritionAPI(mealId.breakfast)
-    //             await new Promise((resolve) => setTimeout(resolve, 100));
-
-    //             //const bNutr = getRelNutr(breakfast);
-    //             //console.log("NEWW : ", bNutr)
-
-    //             // const bArr = Object.entries(breakfast.data.results[0]?.nutrition.nutrients)
-
-    //             // const gBreakfast: [] = bArr.slice(0, 6)
-
-    //             // gBreakfast.forEach((value, index) => {
-    //             //     value[1].amount, value[1].name, value[1].unit,
-    //             // })
-
-    //             // const test = gBreakfast.map((value, index) => {
-    //             //     const name = value[1].name;
-    //             //     const amount = value[1].amount;
-    //             //     const unit = value[1].unit;
-    //             //     console.log("2222: ", name, amount, unit)
-
-    //             //     return [name, amount, unit];
-    //             // });
+        return {
+            values: filtered.map(([key, nutrient]) => nutrient.amount),
+            labels: filtered.map(([key, nutrient]) => nutrient.name)
+        };
+    };
 
 
+    const processedChartData = useMemo(() => {
+        console.log("PROCESS : ", mealNutrition)
+        if (!mealNutrition?.breakfast.data?.nutrients) {
+            return { value: [], label: [], calories: 0 };
+        }
 
-    //             const lunch = await nutritionAPI(mealId.lunch)
-    //             await new Promise((resolve) => setTimeout(resolve, 100));
+        // Extract for each meal
+        const breakfast = extractNutrients(mealNutrition.breakfast);
+        const lunch = extractNutrients(mealNutrition.lunch);
+        const dinner = extractNutrients(mealNutrition.dinner);
 
-    //             const dinner = await nutritionAPI(mealId.dinner)
+        const breakfastValues = breakfast.values;
+        const breakfastLabels = breakfast.labels;
+        const lunchValues = lunch.values;
+        const lunchLabels = lunch.labels;
+        const dinnerValues = dinner.values;
+        const dinnerLabels = dinner.labels;
 
-    //             setMealNutrition({
-    //                 breakfast: breakfast,
-    //                 lunch: lunch,
-    //                 dinner: dinner
-    //             });
-    //         } catch (error) {
-    //             console.error("Error fetching meal images:", error);
-    //         }
-    //     },
-    //     []
-    // );
+        setChartProps({
+            breakfast: {
+                calories: mealNutrition.breakfast.data.nutrients[0]?.amount || 0,
+                value: breakfastValues,
+                label: breakfastLabels
+            },
+            lunch: {
+                calories: mealNutrition.lunch.data.nutrients[0]?.amount || 0,
+                value: lunchValues,
+                label: lunchLabels
+            },
+            dinner: {
+                calories: mealNutrition.dinner.data.nutrients[0]?.amount || 0,
+                value: dinnerValues,
+                label: dinnerLabels
+            }
+        })
+
+        // return [[breakfastLabels, breakfastValues], [lunchLabels, lunchLabels, lunchValues], [dinnerLabels, dinnerValues]]
+
+    }, [mealNutrition]);
+
 
     const getMealNutrients = useCallback(async (mealId: MealID) => {
         console.log("MEAL IDDDDDD: ", mealId)
@@ -159,7 +103,9 @@ export const useMealNutrition = () => {
         }
     }, [])
 
-
+    useEffect(() => {
+        console.log(chartProps)
+    }, [processedChartData, chartProps]);
 
     useEffect(() => {
         console.log("MEALLLLLLLLL: ", mealNutrition);
@@ -175,6 +121,7 @@ export const useMealNutrition = () => {
 
     return {
         mealNutrition,
+        chartProps,
         getMealNutrients,
         resetNutrition
     };

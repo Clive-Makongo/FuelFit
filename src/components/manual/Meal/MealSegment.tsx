@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import pic1 from '@/assets/bg-image.jpg';
 import pic2 from '@/assets/construction.jpeg';
 import pic3 from '@/assets/light.avif';
@@ -13,63 +13,32 @@ const FALLBACK_IMAGES = {
     'dinner': pic3
 };
 
-// Props interface
-interface MealSegmentProps {
-    meal: string;
-    image?: string;  // Optional - will use fallback if not provided
-    title?: string;  // Optional - will use meal name if not provided
-    isLoading?: boolean;
-    mealNutrition: string[][] | number[][]
+interface ChartProps {
+    calories: string | number;
+    value: number[];
+    label: string[];
 }
 
-interface ChartProps {
-    calories: string[] | number[];
-    value: number[];
-    label: string[]
+interface MealSegmentProps {
+    meal: string;
+    image?: string;
+    title?: string;
+    isLoading?: boolean;
+    chartProps: ChartProps;
 }
+
+
 
 const MealSegment = ({
     meal,
     image,
     title,
     isLoading = false,
-    mealNutrition
+    chartProps
 }: MealSegmentProps): JSX.Element => {
 
-    // Use API image if provided, otherwise fallback to local images
     const displayImage = image || FALLBACK_IMAGES[meal as keyof typeof FALLBACK_IMAGES] || pic1;
-
     const [open, setOpen] = useState<boolean>(false);
-    const [chartProps, setChartProps] = useState<ChartProps>({ value: [], label: [], calories: [] })
-
-
-    useEffect(() => {
-        console.log("MEAL SEGMENT PROPS: ", mealNutrition)
-        if (mealNutrition.data) {
-            console.log("CHART DATA : ", mealNutrition.data)
-            const arr = Object.entries(mealNutrition.data.nutrients)
-            const filtered = arr.filter(value => value[1].unit === `g`);
-            console.log("ARRRR: ", filtered);
-            const value: number[] = []
-            const label: string[] = []
-
-            for (let index = 0; index < filtered.length; index++) {
-                value.push(filtered[index][1].amount);
-                label.push(filtered[index][1].name)
-            }
-
-            setChartProps({
-                calories: mealNutrition.data.nutrients[0].amount,
-                value: value,
-                label: label
-            })
-
-
-            console.log("INTPUSS: ", chartProps, value, label)
-        }
-
-        console.log("CHART PROPS: ", chartProps)
-    }, [image, displayImage, meal, mealNutrition, open])
 
     if (isLoading) {
         return (
@@ -88,23 +57,21 @@ const MealSegment = ({
     return (
         <motion.div
             whileHover={{ scale: 1.015 }}
-            className="flex flex-col justify-evenly  text-center meal-segment rounded-lg m-2 h-full overflow-hidden shadow-lg"
+            className="flex flex-col justify-evenly text-center meal-segment rounded-lg m-2 h-full overflow-hidden shadow-lg"
         >
-            <div className="flex relative overflow-hidden rounded-3xl ">
+            <div className="flex relative overflow-hidden rounded-3xl">
                 <img
                     className="w-full h-full object-cover"
-                    src={image}
+                    src={displayImage}
                     alt={`${meal} meal`}
-                //     onError={(e) => {
-                //         // Fallback if API image fails to load
-                //         const target = e.target as HTMLImageElement;
-                //         target.src = FALLBACK_IMAGES[meal as keyof typeof FALLBACK_IMAGES] || pic1;
-                //     }
-                // }
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = FALLBACK_IMAGES[meal as keyof typeof FALLBACK_IMAGES] || pic1;
+                    }}
                 />
             </div>
 
-            <div className="flex flex-col justify-between text-left p-4 ">
+            <div className="flex flex-col justify-between text-left p-4">
                 <h2 className="text-xl font-bold mb-2 text-black-900">
                     {meal.toUpperCase()}
                 </h2>
@@ -115,17 +82,18 @@ const MealSegment = ({
                     </h3>
                 )}
 
-                <div className="bg-blue-500 text-white p-2 rounded text-sm font-medium">
-                    {title && 'Click Generate to Recipe'}
+                <div className="bg-blue-500 text-white p-2 rounded text-sm font-medium mb-2">
+                    {title ? 'Click Generate to Recipe' : 'No recipe available'}
                 </div>
 
                 <button
                     onClick={() => setOpen(true)}
-                    className="bg-blue-500 text-white p-2 rounded text-sm font-medium">
-                    {title && 'Click Generate to Nutrition'}
+                    className="bg-blue-500 text-white p-2 rounded text-sm font-medium"
+                >
+                    {title ? 'View Nutrition Info' : 'View Nutrition'}
                 </button>
 
-                {<Modal
+                <Modal
                     classNames={{
                         overlay: "bg-black/50 fixed inset-0 flex items-center justify-center",
                         modal: "bg-white rounded-2xl shadow-xl p-6 w-96 max-w-full text-center",
@@ -134,9 +102,9 @@ const MealSegment = ({
                     onClose={() => setOpen(false)}
                     center
                 >
-                    <h1>{title} Calories {chartProps.calories}</h1>
+                    <h1>{title || meal} - Calories: {chartProps.calories}</h1>
                     <Chart value={chartProps.value} label={chartProps.label} />
-                </Modal>}
+                </Modal>
             </div>
         </motion.div>
     );

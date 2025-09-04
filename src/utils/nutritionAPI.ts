@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APIKEY = import.meta.env.VITE_API_KEY3;
+const APIKEY = import.meta.env.VITE_API_KEY1;
 
 export default function search(id: number | string | null) {
     const BASEURL = `https://api.spoonacular.com/recipes/${id}/nutritionWidget.json`;

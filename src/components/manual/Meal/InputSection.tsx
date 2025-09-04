@@ -24,7 +24,7 @@ const InputSection: React.FC<InputSectionProps> = ({
             {/* Calories Input */}
             <div className="flex flex-row justify-between">
                 <label htmlFor="calories" className="text-sm font-medium mb-1">
-                    Calories (1-5000)
+                    Calories (1-3000)
                 </label>
                 <input
                     id="calories"

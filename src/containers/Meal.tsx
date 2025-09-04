@@ -24,20 +24,22 @@ const Meal = (): JSX.Element => {
         error,
         isMobile,
         imagesLoaded,
+        mealId,
         mealType,
         mealImage,
         mealNutrition,
         nutrition,
         handleGenerateMeal,
         isFormValid,
-        MEALS
+        MEALS,
+        chartProps
     } = useMealContext();
 
     const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(" MEALPAGE: MEAL TYPE: ", mealNutrition)
-    }, [mealType, mealImage, mealNutrition])
+        console.log(" MEALPAGE: MEAL TYPE: ", chartProps)
+    }, [mealType, mealImage, mealNutrition, mealId])
 
     return (
         <div className="meal-page bg-white min-h-screen">
@@ -94,7 +96,7 @@ const Meal = (): JSX.Element => {
                                 title={mealType[meal]}
                                 image={mealImage[meal]}
                                 isLoading={isLoading}
-                                mealNutrition={mealNutrition[meal]}
+                                chartProps={chartProps[meal]}
                             />
 
                         ))}

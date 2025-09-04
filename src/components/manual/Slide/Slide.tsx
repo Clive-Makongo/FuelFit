@@ -1,10 +1,11 @@
 // Need to get breakfast lunch and dinner
 import { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMealPlanner } from "@/hooks/useMealPlanner";
 import pic1 from '../../../assets/bg-image.jpg'
 import pic2 from '../../../assets/light.avif'
 import pic3 from '../../../assets/construction.jpeg'
+import Chart from "@/components/manual/Chart/Chart"
+import Modal from "react-responsive-modal";
 
 // map images to pics (for now)
 
