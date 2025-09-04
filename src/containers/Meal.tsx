@@ -84,6 +84,7 @@ const Meal = (): JSX.Element => {
                         {imagesLoaded && <Slide
                             mealImages={mealImage}
                             mealTypes={mealType}
+                            chartProps={chartProps}
                         />}
                     </div>
                 ) : (

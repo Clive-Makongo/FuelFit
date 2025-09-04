@@ -1,11 +1,12 @@
 // Need to get breakfast lunch and dinner
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import pic1 from '../../../assets/bg-image.jpg'
 import pic2 from '../../../assets/light.avif'
 import pic3 from '../../../assets/construction.jpeg'
 import Chart from "@/components/manual/Chart/Chart"
 import Modal from "react-responsive-modal";
+import { ChartProps } from "../Meal/MealSegment";
 
 // map images to pics (for now)
 
@@ -29,10 +30,12 @@ interface SlideProps {
         lunch: string;
         dinner: string;
     };
+    chartProps: ChartProps
 }
 
 
-const Slide = ({ mealImages, mealTypes }: SlideProps): React.FC<SlideProps> => {
+const Slide = ({ mealImages, mealTypes, chartProps }: SlideProps): React.FC<SlideProps> => {
+    const [open, setOpen] = useState<boolean>(false)
     const [slideIndex, setSlideIndex] = useState<number>(0); // track which slide we are on
     const [direction, setDirection] = useState<number>(0); // state that tracks direction
     // Need a function to swap the slides
@@ -40,6 +43,10 @@ const Slide = ({ mealImages, mealTypes }: SlideProps): React.FC<SlideProps> => {
     const currentMeal: string = meals[slideIndex];
     const currentImage: string = mealImages[currentMeal] || '';
     const currentMealType: string = mealTypes[currentMeal] || currentMeal;
+
+    useEffect(() => {
+        console.log(chartProps[currentMeal], " : SLIDEEE ", currentMeal)
+    }, [chartProps, currentMeal])
 
     // const currentMeal: string = meals[slideIndex];
     // const currentImage: string = sources[slideIndex];
@@ -70,8 +77,6 @@ const Slide = ({ mealImages, mealTypes }: SlideProps): React.FC<SlideProps> => {
             };
         }
     };
-
-
 
     const handleForward = () => {
         setSlideIndex(prev => prev === meals.length - 1 ? 0 : prev + 1);
@@ -111,7 +116,28 @@ const Slide = ({ mealImages, mealTypes }: SlideProps): React.FC<SlideProps> => {
                 >
                     {currentImage && <img className='w-full' src={currentImage} alt="meal-image" />}
                     <h1 className='p-4  font-bold w-1/2'>{currentMealType}</h1>
-                    <p className="text-2xl p-4 text-center font-bold bg-red-500">Data</p>
+                    <button
+                        onClick={() => setOpen(true)}
+                        className="text-2xl p-4 text-center font-bold bg-red-500"
+                    >
+                        Data
+                    </button>
+                    <Modal
+                        classNames={{
+                            overlay: "bg-black/50 fixed inset-0 flex items-center justify-center",
+                            modal: "bg-white rounded-2xl shadow-xl p-6 w-96 max-w-full text-center",
+                        }}
+                        onClose={() => setOpen(false)}
+                        center
+                        open={open}
+                    >
+                        <h1 className='p-4  font-bold w-1/2'>{currentMealType}</h1>
+                        {<Chart
+                            value={chartProps[currentMeal].value}
+                            label={chartProps.lunch.label}
+                        />}
+                        <h1>Calories: {chartProps[currentMeal].calories}</h1>
+                    </Modal>
                 </motion.div>
             </AnimatePresence>
 

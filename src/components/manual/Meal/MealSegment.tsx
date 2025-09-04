@@ -13,7 +13,7 @@ const FALLBACK_IMAGES = {
     'dinner': pic3
 };
 
-interface ChartProps {
+export interface ChartProps {
     calories: string | number;
     value: number[];
     label: string[];
@@ -26,8 +26,6 @@ interface MealSegmentProps {
     isLoading?: boolean;
     chartProps: ChartProps;
 }
-
-
 
 const MealSegment = ({
     meal,
